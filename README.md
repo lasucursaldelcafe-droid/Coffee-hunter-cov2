@@ -68,9 +68,20 @@ src/
 
 ## Despliegue
 
-Ver [`docs/03-DEPLOY.md`](docs/03-DEPLOY.md). Resumen:
+Ver [`docs/03-DEPLOY.md`](docs/03-DEPLOY.md) y [`docs/04-GITHUB-AUTOMATION.md`](docs/04-GITHUB-AUTOMATION.md).
 
 ```bash
-npm run build
-# Vercel: conectar repo y configurar TURSO_* en variables de entorno
+npm run ci:validate   # Validación completa (igual que GitHub Actions)
+npm run deploy:auto   # Deploy a Vercel (requiere VERCEL_TOKEN)
 ```
+
+### Automatización GitHub Actions
+
+| Workflow | Cuándo | Qué hace |
+|----------|--------|----------|
+| `ci.yml` | Cada push/PR | typecheck, lint, build |
+| `deploy-vercel.yml` | Push a `main` | Publica en Vercel |
+| `deploy-preview.yml` | PRs | URL preview en el PR |
+| `auto-merge-cursor-prs.yml` | PR `cursor/*` | Merge automático |
+
+**Actions:** https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/actions

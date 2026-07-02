@@ -12,7 +12,9 @@
     "db:init": "tsx scripts/init-db.ts",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
-    "health-check": "node scripts/health-check.mjs"
+    "health-check": "node scripts/health-check.mjs",
+    "ci:validate": "node scripts/ci-validate.mjs",
+    "deploy:auto": "node scripts/deploy-auto.mjs"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",
