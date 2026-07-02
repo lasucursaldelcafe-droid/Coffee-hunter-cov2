@@ -7,6 +7,10 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export function generateStaticParams() {
+  return stores.map((store) => ({ slug: store.slug }));
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const store = stores.find((s) => s.slug === slug);

@@ -2,58 +2,44 @@
 
 ## Estado actual
 
-- [x] Código en `main`: https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2
-- [x] CI automático (typecheck, lint, build) — **verde**
-- [x] Workflows de deploy configurados
-- [ ] **URL pública activa** — requiere conectar Vercel (1 paso, ~3 min)
+- [x] Código en `main`
+- [x] CI automático en cada push
+- [x] **Deploy automático a GitHub Pages** en cada push a `main`
+- [ ] Vercel (opcional, para API + base de datos Turso)
 
-## Paso 1 — Publicar en Vercel (recomendado)
+## URL pública (automática)
 
-[![Deploy con Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Flasucursaldelcafe-droid%2FCoffee-hunter-cov2&project-name=colombia-green-coffee&env=ENCRYPTION_KEY&envDescription=Genera%20con%20npm%20run%20setup)
+Tras el push a `main`, GitHub Actions publica en:
 
-1. Clic en el botón de arriba (o abre https://vercel.com/new/clone?repository-url=https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2)
-2. Autoriza GitHub → Importa el repo
-3. Framework: **Next.js** (auto)
-4. Variables de entorno mínimas:
-   - `ENCRYPTION_KEY` → genera con `npm run setup` localmente
-   - `MAIN_EMAIL` → `lasucursaldelcafe@gmail.com`
-5. **Deploy** → obtienes URL tipo `colombia-green-coffee.vercel.app`
+**https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/**
 
-## Paso 2 — Base de datos Turso (producción)
+Ver progreso: https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/actions/workflows/deploy-github-pages.yml
 
-```bash
-turso db create colombia-green-coffee
-turso db tokens create colombia-green-coffee
-```
+## Qué se despliega automáticamente
 
-Añade en Vercel:
-- `TURSO_DATABASE_URL`
-- `TURSO_AUTH_TOKEN`
+| Workflow | Trigger | Destino |
+|----------|---------|---------|
+| `deploy-github-pages.yml` | push `main` | GitHub Pages (URL pública) |
+| `ci.yml` | push / PR | Validación |
+| `deploy-vercel.yml` | push `main` | Vercel (si hay secrets) |
 
-## Paso 3 — Deploy automático en cada push (opcional)
+## Formularios en GitHub Pages
 
-En GitHub → Settings → Secrets → Actions:
+En hosting estático, el formulario de tiendas usa:
+1. Google Sheets (`NEXT_PUBLIC_SHEETS_WEB_APP_URL`) si está configurado
+2. `localStorage` como respaldo local
 
-| Secret | Valor |
-|--------|-------|
-| `VERCEL_TOKEN` | https://vercel.com/account/tokens |
-| `VERCEL_ORG_ID` | Vercel → Team → Settings |
-| `VERCEL_PROJECT_ID` | Proyecto → Settings |
+Para API completa con base de datos → conectar Vercel + Turso.
 
-Tras esto, cada `git push` a `main` publica automáticamente.
+## Vercel (opcional, servidor completo)
 
-## Paso 4 — Verificar
+[![Deploy con Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Flasucursaldelcafe-droid%2FCoffee-hunter-cov2&project-name=colombia-green-coffee)
+
+Secrets en GitHub para deploy automático a Vercel:
+- `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`
+
+## Verificar
 
 ```bash
-curl https://TU-URL.vercel.app/api/health
+curl -sI https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/ | head -1
 ```
-
-Respuesta esperada: `{"status":"ok","service":"colombia-green-coffee",...}`
-
-## Enlaces
-
-| Recurso | URL |
-|---------|-----|
-| Repo | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2 |
-| Actions | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/actions |
-| Guía completa | [docs/04-GITHUB-AUTOMATION.md](docs/04-GITHUB-AUTOMATION.md) |

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { storePlans } from "@/lib/data";
+import { submitStoreRegistration } from "@/lib/stores/submit-client";
 
 interface StoreRegistrationFormProps {
   mode?: "full" | "compact";
@@ -34,17 +35,7 @@ export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormPr
     setError("");
 
     try {
-      const res = await fetch("/api/tiendas", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) {
-        const data = (await res.json()) as { error?: string };
-        throw new Error(data.error ?? "Error al registrar la tienda");
-      }
-
+      await submitStoreRegistration(form);
       setSubmitted(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado");
