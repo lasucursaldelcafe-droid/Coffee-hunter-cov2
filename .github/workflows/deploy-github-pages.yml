@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -32,10 +32,17 @@ jobs:
           npm ci
           node scripts/build-github-pages.mjs
 
-      - name: Subir artefacto
+      - name: Subir artefacto (GitHub Actions Pages)
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
+
+      - name: Publicar rama gh-pages (respaldo)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out
+          force_orphan: true
 
   deploy:
     needs: build
@@ -44,13 +51,20 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Publicar en GitHub Pages
+      - name: Publicar en GitHub Pages (Actions)
         id: deployment
         uses: actions/deploy-pages@v4
+        continue-on-error: true
 
       - name: URL pública
         run: |
           echo "============================================"
-          echo "✅ Sitio publicado:"
-          echo "${{ steps.deployment.outputs.page_url }}"
+          if [ -n "${{ steps.deployment.outputs.page_url }}" ]; then
+            echo "✅ Sitio publicado: ${{ steps.deployment.outputs.page_url }}"
+          else
+            echo "⚠️ deploy-pages omitido — activa Pages una vez:"
+            echo "https://github.com/${{ github.repository }}/settings/pages"
+            echo "Fuente: GitHub Actions (o rama gh-pages / root)"
+            echo "URL esperada: https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/"
+          fi
           echo "============================================"
