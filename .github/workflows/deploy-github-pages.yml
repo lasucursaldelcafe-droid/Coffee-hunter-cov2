@@ -7,15 +7,13 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages-deploy
   cancel-in-progress: false
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,54 +30,16 @@ jobs:
           npm ci
           node scripts/build-github-pages.mjs
 
-      - name: Subir artefacto (GitHub Actions Pages)
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./out
-
-      - name: Guardar build para rama gh-pages
-        uses: actions/upload-artifact@v4
-        with:
-          name: static-site
-          path: out/
-          retention-days: 1
-
-  publish-gh-pages:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: static-site
-          path: out
-
-      - name: Publicar rama gh-pages
+      - name: Publicar en rama gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./out
           force_orphan: true
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Publicar en GitHub Pages (Actions)
-        id: deployment
-        uses: actions/deploy-pages@v4
-        continue-on-error: true
-
       - name: URL pública
         run: |
           echo "============================================"
-          if [ -n "${{ steps.deployment.outputs.page_url }}" ]; then
-            echo "✅ Sitio publicado: ${{ steps.deployment.outputs.page_url }}"
-          else
-            echo "⚠️ Activa GitHub Pages una vez en Settings (rama gh-pages o GitHub Actions)"
-            echo "https://github.com/${{ github.repository }}/settings/pages"
-            echo "URL esperada: https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/"
-          fi
+          echo "✅ Sitio publicado en gh-pages"
+          echo "URL: https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/"
           echo "============================================"
