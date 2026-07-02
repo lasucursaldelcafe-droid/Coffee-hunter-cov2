@@ -37,7 +37,23 @@ jobs:
         with:
           path: ./out
 
-      - name: Publicar rama gh-pages (respaldo)
+      - name: Guardar build para rama gh-pages
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-site
+          path: out/
+          retention-days: 1
+
+  publish-gh-pages:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: static-site
+          path: out
+
+      - name: Publicar rama gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -62,9 +78,8 @@ jobs:
           if [ -n "${{ steps.deployment.outputs.page_url }}" ]; then
             echo "✅ Sitio publicado: ${{ steps.deployment.outputs.page_url }}"
           else
-            echo "⚠️ deploy-pages omitido — activa Pages una vez:"
+            echo "⚠️ Activa GitHub Pages una vez en Settings (rama gh-pages o GitHub Actions)"
             echo "https://github.com/${{ github.repository }}/settings/pages"
-            echo "Fuente: GitHub Actions (o rama gh-pages / root)"
             echo "URL esperada: https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/"
           fi
           echo "============================================"
