@@ -1,4 +1,4 @@
-name: Publicar en GitHub Pages
+name: Publicar sitio web
 
 on:
   push:
@@ -11,15 +11,12 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-deploy
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -35,21 +32,25 @@ jobs:
           npm ci
           node scripts/build-github-pages.mjs
 
-      - uses: actions/configure-pages@v5
-
-      - uses: actions/upload-pages-artifact@v3
+      - name: Subir artefacto
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: out
+          path: ./out
 
-      - name: Publicar en línea
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar en GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Verificar sitio publicado
+      - name: URL pública
         run: |
-          URL="${{ steps.deployment.outputs.page_url }}"
-          echo "🌐 URL pública: $URL"
-          for path in "" "catalogo/" "tiendas/" "crear-tienda/" "logistica/"; do
-            CODE=$(curl -sL -o /dev/null -w "%{http_code}" "${URL}${path}")
-            echo "${URL}${path} → HTTP $CODE"
-          done
+          echo "============================================"
+          echo "✅ Sitio publicado:"
+          echo "${{ steps.deployment.outputs.page_url }}"
+          echo "============================================"

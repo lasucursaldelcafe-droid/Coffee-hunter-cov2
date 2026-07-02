@@ -45,6 +45,9 @@ try {
   }
 
   console.log("\n✅ Build GitHub Pages listo en ./out");
+
+  const nojekyll = path.join(outDir, ".nojekyll");
+  fs.writeFileSync(nojekyll, "");
 } finally {
   if (moved && fs.existsSync(apiBackup)) {
     fs.renameSync(apiBackup, apiDir);
