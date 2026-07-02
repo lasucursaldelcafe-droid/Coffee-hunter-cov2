@@ -7,10 +7,10 @@ Plataforma web integral de café colombiano de especialidad, inspirada en [Colom
 | Recurso | URL |
 |---------|-----|
 | **Repositorio** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2 |
-| **Pull Request** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/pull/1 |
-| **Rama de desarrollo** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/tree/cursor/colombia-green-coffee-987d |
-| **Código fuente** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/tree/cursor/colombia-green-coffee-987d/src |
-| **Issues** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/issues |
+| **Código (main)** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/tree/main |
+| **GitHub Actions** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/actions |
+| **Publicar en web** | [![Deploy con Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Flasucursaldelcafe-droid%2FCoffee-hunter-cov2&project-name=colombia-green-coffee) |
+| **Checklist deploy** | [CHECKLIST.md](CHECKLIST.md) |
 
 ### Ecosistema La Sucursal del Café
 
