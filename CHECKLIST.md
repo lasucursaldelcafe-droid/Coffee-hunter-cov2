@@ -4,18 +4,16 @@
 
 - [x] Código en `main`
 - [x] CI automático en cada push
-- [x] **Deploy automático a GitHub Pages** (`deploy-pages` en cada push a `main`)
+- [x] **Deploy automático a GitHub Pages** (rama `gh-pages` en cada push a `main`)
 - [ ] Vercel (opcional, para API + base de datos Turso)
 
 ## URL pública (automática)
 
-Tras el push a `main`, GitHub Actions compila y publica con `actions/deploy-pages`:
+Tras el push a `main`, GitHub Actions compila y publica en la rama `gh-pages`:
 
 **https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/**
 
 Ver progreso: https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/actions/workflows/deploy-github-pages.yml
-
-> Si la URL devuelve 404 la primera vez, en Settings → Pages elige **GitHub Actions** como fuente (una sola vez).
 
 ## Qué se despliega automáticamente
 
