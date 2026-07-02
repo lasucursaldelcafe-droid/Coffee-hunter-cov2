@@ -22,6 +22,8 @@
 
 # local data
 /data/
+*.db
+*.db-journal
 
 # misc
 .DS_Store

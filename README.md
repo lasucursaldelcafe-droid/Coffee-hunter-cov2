@@ -2,52 +2,75 @@
 
 Plataforma web integral de café colombiano de especialidad, inspirada en [Colombian Coffee Hunter](https://www.colombiancoffeehunter.com/es).
 
+## Enlaces GitHub
+
+| Recurso | URL |
+|---------|-----|
+| **Repositorio** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2 |
+| **Pull Request** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/pull/1 |
+| **Rama de desarrollo** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/tree/cursor/colombia-green-coffee-987d |
+| **Código fuente** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/tree/cursor/colombia-green-coffee-987d/src |
+| **Issues** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/issues |
+
+### Ecosistema La Sucursal del Café
+
+| Repo | URL | Rol |
+|------|-----|-----|
+| empresario-virtual | https://github.com/lasucursaldelcafe-droid/empresario-virtual | Patrón stack (Drizzle, Turso, Zod) |
+| feria-cafe-inscripcion | https://github.com/lasucursaldelcafe-droid/feria-cafe-inscripcion | Formularios + Firebase |
+| WEb-mas-cafe | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe | Vercel + wallet (live: https://w-eb-mas-cafe.vercel.app) |
+| Programa-de-logistca | https://github.com/lasucursaldelcafe-droid/Programa-de-logistca | Logística (en desarrollo) |
+
 ## Características
 
-- **Catálogo de café**: café verde, tostado y servicios de maquila con puntajes SCA
-- **Coffee Shop Marketplace**: inscripción para montar tu propia tienda de café
+- **Catálogo de café**: café verde, tostado y maquila con puntajes SCA
+- **Coffee Shop Marketplace**: inscripción para montar tu propia tienda
 - **Logística internacional**: operadores de envío a más de 15 países
 - **Maquila de marca**: desarrollo de marcas premium con perfiles únicos
-- **Trazabilidad**: orígenes colombianos (Huila, Cauca, Tolima, Nariño, etc.)
 
 ## Stack
 
-- Next.js 16 (App Router)
-- TypeScript
+- Next.js 16 (App Router) + TypeScript strict
 - Tailwind CSS 4
-- API Routes para registro de tiendas
+- Drizzle ORM + SQLite local / Turso en producción
+- Zod para validación de APIs
+- Vercel para deploy
 
 ## Desarrollo
 
 ```bash
 npm install
+npm run setup      # Genera .env.local
+npm run db:init    # Crea tablas
 npm run dev
 ```
 
-Abre [http://localhost:3000](http://localhost:3000).
+Abre http://localhost:3000
+
+## Documentación
+
+- [`docs/01-VISION.md`](docs/01-VISION.md) — Visión del producto
+- [`docs/02-ARCHITECTURE.md`](docs/02-ARCHITECTURE.md) — Arquitectura técnica
+- [`docs/03-DEPLOY.md`](docs/03-DEPLOY.md) — Deploy en Vercel + Turso
+- [`AGENTS.md`](AGENTS.md) — Guía para agentes IA
 
 ## Estructura
 
 ```
 src/
-├── app/
-│   ├── page.tsx              # Landing
-│   ├── catalogo/             # Catálogo de café
-│   ├── tiendas/              # Marketplace de coffee shops
-│   ├── crear-tienda/         # Inscripción de tiendas
-│   ├── logistica/            # Servicios logísticos
-│   ├── maquila/              # Maquila de marca
-│   ├── nosotros/             # Sobre nosotros
-│   └── api/tiendas/          # API de registro
-├── components/               # Componentes UI
-└── lib/data.ts               # Datos de productos y tiendas
+├── app/              # Páginas + API routes
+├── components/       # UI
+└── lib/
+    ├── db/           # Drizzle schema + conexión
+    ├── validations/  # Zod schemas
+    └── stores/       # Lógica de registro
 ```
 
 ## Despliegue
 
-Compatible con Vercel, Netlify o cualquier plataforma que soporte Next.js.
+Ver [`docs/03-DEPLOY.md`](docs/03-DEPLOY.md). Resumen:
 
 ```bash
 npm run build
-npm start
+# Vercel: conectar repo y configurar TURSO_* en variables de entorno
 ```
