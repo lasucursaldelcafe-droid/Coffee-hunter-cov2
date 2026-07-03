@@ -13,9 +13,17 @@ export interface StoreFormData {
   acceptCommission: boolean;
 }
 
+export interface StoreRegistrationResult {
+  slug: string;
+  adminToken: string;
+  panelUrl: string;
+}
+
 const STORAGE_KEY = "cgc_pending_stores";
 
-export async function submitStoreRegistration(form: StoreFormData): Promise<void> {
+export async function submitStoreRegistration(
+  form: StoreFormData,
+): Promise<StoreRegistrationResult | void> {
   const sheetsUrl = process.env.NEXT_PUBLIC_SHEETS_WEB_APP_URL;
 
   try {
@@ -24,7 +32,18 @@ export async function submitStoreRegistration(form: StoreFormData): Promise<void
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
-    if (res.ok) return;
+    if (res.ok) {
+      const data = (await res.json()) as {
+        slug: string;
+        adminToken: string;
+        panelUrl: string;
+      };
+      return {
+        slug: data.slug,
+        adminToken: data.adminToken,
+        panelUrl: data.panelUrl ?? `/panel/${data.slug}`,
+      };
+    }
     if (res.status === 409) {
       const data = (await res.json()) as { error?: string };
       throw new Error(data.error ?? "Correo ya registrado");

@@ -1,26 +1,14 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { products } from "@/lib/data";
+import Link from "next/link";
+import { getMarketplaceProduct } from "@/lib/marketplace/catalog";
 import { BuyerInquiryForm } from "@/components/BuyerInquiryForm";
 import { TrustBadges } from "@/components/TrustBadges";
 
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ id: string }>;
-}
-
-export function generateStaticParams() {
-  return products.map((p) => ({ id: p.id }));
-}
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { id } = await params;
-  const product = products.find((p) => p.id === id);
-  if (!product) return { title: "Producto no encontrado" };
-  return {
-    title: product.name,
-    description: product.description,
-  };
 }
 
 const typeLabels = {
@@ -29,9 +17,19 @@ const typeLabels = {
   maquila: "Maquila",
 };
 
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+  const product = await getMarketplaceProduct(id);
+  if (!product) return { title: "Producto no encontrado" };
+  return {
+    title: product.name,
+    description: product.description,
+  };
+}
+
 export default async function ProductDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const product = products.find((p) => p.id === id);
+  const product = await getMarketplaceProduct(id);
 
   if (!product) {
     notFound();
@@ -52,32 +50,51 @@ export default async function ProductDetailPage({ params }: PageProps) {
                 <span className="text-xs font-semibold uppercase tracking-wide text-green">
                   {typeLabels[product.type]}
                 </span>
+                {product.storeName && (
+                  <p className="text-xs text-foreground/50 mt-1">
+                    Vendido por{" "}
+                    {product.storeSlug ? (
+                      <Link href={`/tiendas/${product.storeSlug}`} className="text-green font-semibold hover:underline">
+                        {product.storeName}
+                      </Link>
+                    ) : (
+                      product.storeName
+                    )}
+                  </p>
+                )}
                 <h1 className="font-display text-3xl sm:text-4xl font-bold text-coffee mt-2 mb-3">
                   {product.name}
                 </h1>
                 <p className="text-foreground/65">
-                  {product.origin} · {product.altitude} · {product.process} · {product.variety}
+                  {product.origin}
+                  {product.altitude ? ` · ${product.altitude}` : ""}
+                  {product.process ? ` · ${product.process}` : ""}
+                  {product.variety ? ` · ${product.variety}` : ""}
                 </p>
               </div>
 
               <div className="mt-8 flex items-end gap-2">
                 <span className="text-4xl font-bold text-coffee">${product.pricePerKg}</span>
                 <span className="text-foreground/50 pb-1">USD / kg</span>
-                <span className="ml-auto px-3 py-1 bg-coffee text-white rounded-full text-sm font-bold">
-                  {product.score} SCA
-                </span>
+                {product.score > 0 && (
+                  <span className="ml-auto px-3 py-1 bg-coffee text-white rounded-full text-sm font-bold">
+                    {product.score} SCA
+                  </span>
+                )}
               </div>
             </div>
 
             <p className="text-foreground/75 leading-relaxed mb-6">{product.description}</p>
 
-            <div className="flex flex-wrap gap-2">
-              {product.profile.map((tag) => (
-                <span key={tag} className="px-3 py-1 bg-cream rounded-full text-sm text-coffee">
-                  {tag}
-                </span>
-              ))}
-            </div>
+            {product.profile.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {product.profile.map((tag) => (
+                  <span key={tag} className="px-3 py-1 bg-cream rounded-full text-sm text-coffee">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="lg:sticky lg:top-24 h-fit">

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { businessTypes, retailChannels } from "@/lib/platform";
 import { formatCommissionRate } from "@/lib/platform";
 import { submitStoreRegistration } from "@/lib/stores/submit-client";
+import { saveStoreAdminSession } from "@/lib/stores/session";
 
 interface StoreRegistrationFormProps {
   mode?: "full" | "compact";
@@ -14,6 +15,7 @@ const STEPS = ["Tu tienda", "Perfil comercial", "Confirmar"];
 export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormProps) {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [panelUrl, setPanelUrl] = useState("/panel");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({
@@ -59,7 +61,7 @@ export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormPr
     setError("");
 
     try {
-      await submitStoreRegistration({
+      const result = await submitStoreRegistration({
         storeName: form.storeName,
         ownerName: form.ownerName,
         email: form.email,
@@ -75,6 +77,10 @@ export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormPr
         description: form.description,
         acceptCommission: true,
       });
+      if (result) {
+        saveStoreAdminSession(result.slug, result.adminToken);
+        setPanelUrl(result.panelUrl);
+      }
       setSubmitted(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado");
@@ -92,18 +98,17 @@ export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormPr
           </svg>
         </div>
         <h3 className="font-display text-2xl font-bold text-coffee mb-3">
-          ¡Solicitud recibida!
+          ¡Tu tienda está lista!
         </h3>
         <p className="text-foreground/70 max-w-md mx-auto mb-6">
-          <strong>{form.storeName}</strong> está en revisión. Te escribiremos a{" "}
-          <strong>{form.email}</strong> para activar tu tienda con comisión de{" "}
-          {formatCommissionRate()} por venta — sin costo de suscripción.
+          <strong>{form.storeName}</strong> ya está activa. Administra productos, colores y textos
+          desde tu panel. Tus productos aparecerán también en el catálogo principal.
         </p>
         <a
-          href="/panel"
+          href={panelUrl}
           className="inline-block px-6 py-3 bg-coffee text-white font-semibold rounded-full hover:bg-coffee-dark transition-colors"
         >
-          Ir al panel del vendedor
+          Ir a mi panel de administración
         </a>
       </div>
     );

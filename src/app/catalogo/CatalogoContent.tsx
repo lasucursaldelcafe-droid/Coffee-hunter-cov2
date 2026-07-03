@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SectionHeading } from "@/components/SectionHeading";
-import { CoffeeCard } from "@/components/CoffeeCard";
-import { products } from "@/lib/data";
+import { MarketplaceProductCard } from "@/components/MarketplaceProductCard";
+import type { MarketplaceProduct } from "@/lib/marketplace/types";
 
 const filters = [
   { value: "all", label: "Todos" },
@@ -15,6 +16,15 @@ const filters = [
 export function CatalogoContent() {
   const searchParams = useSearchParams();
   const activeFilter = searchParams.get("tipo") ?? "all";
+  const [products, setProducts] = useState<MarketplaceProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/productos")
+      .then((res) => res.json() as Promise<{ products: MarketplaceProduct[] }>)
+      .then((data) => setProducts(data.products ?? []))
+      .finally(() => setLoading(false));
+  }, []);
 
   const filtered =
     activeFilter === "all"
@@ -27,7 +37,7 @@ export function CatalogoContent() {
         <SectionHeading
           eyebrow="Catálogo"
           title="Café de especialidad colombiano"
-          description="Microlotes, variedades exóticas y servicios de maquila. Cada café con trazabilidad completa y puntaje SCA certificado."
+          description="Microlotes de la plataforma y de coffee shops verificadas. Cada café con trazabilidad y puntaje SCA."
         />
 
         <div className="flex flex-wrap justify-center gap-2 mb-12">
@@ -46,15 +56,19 @@ export function CatalogoContent() {
           ))}
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((product) => (
-            <div key={product.id} id={product.id}>
-              <CoffeeCard product={product} />
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <p className="text-center text-foreground/60 py-12">Cargando catálogo...</p>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map((product) => (
+              <div key={product.id} id={product.id}>
+                <MarketplaceProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        )}
 
-        {filtered.length === 0 && (
+        {!loading && filtered.length === 0 && (
           <p className="text-center text-foreground/60 py-12">
             No hay productos en esta categoría.
           </p>

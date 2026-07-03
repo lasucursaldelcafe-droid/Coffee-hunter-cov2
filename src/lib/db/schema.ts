@@ -4,6 +4,7 @@ import { PLATFORM_COMMISSION_RATE } from "@/lib/platform";
 export const coffeeStores = sqliteTable("coffee_stores", {
   id: text("id").primaryKey(),
   slug: text("slug").notNull().unique(),
+  adminToken: text("admin_token").notNull().unique(),
   storeName: text("store_name").notNull(),
   ownerName: text("owner_name").notNull(),
   email: text("email").notNull().unique(),
@@ -16,8 +17,32 @@ export const coffeeStores = sqliteTable("coffee_stores", {
   monthlyVolumeKg: integer("monthly_volume_kg"),
   commissionRate: real("commission_rate").notNull().default(PLATFORM_COMMISSION_RATE),
   description: text("description").default(""),
-  status: text("status").notNull().default("pending"),
+  themePrimaryColor: text("theme_primary_color").default("#68190e"),
+  themeAccentColor: text("theme_accent_color").default("#2d5a27"),
+  themeBackgroundColor: text("theme_background_color").default("#f7e9e0"),
+  themeHeroTitle: text("theme_hero_title").default(""),
+  themeHeroSubtitle: text("theme_hero_subtitle").default(""),
+  themeButtonStyle: text("theme_button_style").default("pill"),
+  status: text("status").notNull().default("active"),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+});
+
+export const storeProducts = sqliteTable("store_products", {
+  id: text("id").primaryKey(),
+  storeId: text("store_id").notNull(),
+  name: text("name").notNull(),
+  origin: text("origin").notNull().default("Colombia"),
+  description: text("description").default(""),
+  pricePerKg: real("price_per_kg").notNull(),
+  score: real("score"),
+  process: text("process").default(""),
+  variety: text("variety").default(""),
+  type: text("type").notNull().default("verde"),
+  profile: text("profile").default("[]"),
+  altitude: text("altitude").default(""),
+  published: integer("published", { mode: "boolean" }).notNull().default(true),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });
 
 export const retailSalesReports = sqliteTable("retail_sales_reports", {
