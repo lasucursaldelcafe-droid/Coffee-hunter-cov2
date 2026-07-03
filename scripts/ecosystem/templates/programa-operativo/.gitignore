@@ -1,5 +1,0 @@
-programa-operativo.db
-.env.local
-node_modules/
-.next/
-data/*.db

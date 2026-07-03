@@ -1,195 +1,62 @@
 {
-  "$schema": "./manifest.schema.json",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "organization": "lasucursaldelcafe-droid",
-  "contact": {
-    "email": "lasucursaldelcafe@gmail.com",
-    "whatsapp": "573116699638",
-    "instagram": "lasucursaldelcafe",
-    "firebaseProjectId": "la-sucursal-del-cafe"
-  },
-  "defaults": {
-    "projectsRoot": "C:\\Users\\LENOVO\\Projects",
-    "branch": "main"
-  },
-  "sharedSecrets": [
-    "VERCEL_TOKEN",
-    "VERCEL_ORG_ID",
-    "TURSO_PLATFORM_TOKEN",
-    "GOOGLE_CLIENT_ID",
-    "GOOGLE_CLIENT_SECRET",
-    "MAIN_EMAIL",
-    "ENCRYPTION_KEY"
-  ],
-  "projects": [
-    {
-      "id": "la-sucursal",
-      "name": "La Sucursal del Café",
-      "type": "brand",
-      "description": "Marca madre — identidad, Firebase, contacto central",
-      "repo": null,
-      "status": "active",
-      "urls": {
-        "firebase": "https://console.firebase.google.com/project/la-sucursal-del-cafe"
-      }
-    },
-    {
-      "id": "empresario-virtual",
-      "name": "Empresario Virtual",
-      "type": "app",
-      "description": "Plataforma administrativa con 8 agentes IA para microempresas",
-      "repo": "lasucursaldelcafe-droid/empresario-virtual",
-      "localDir": "empresario-virtual",
-      "stack": ["Next.js 16", "Turso", "Drizzle", "Google OAuth", "Firebase"],
-      "status": "active",
-      "setup": {
-        "install": "npm install",
-        "init": "npm run setup",
-        "db": "npm run db:init",
-        "deploy": "npm run deploy:auto",
-        "githubSecrets": [
-          "VERCEL_TOKEN",
-          "VERCEL_ORG_ID",
-          "VERCEL_PROJECT_ID",
-          "TURSO_DATABASE_URL",
-          "TURSO_AUTH_TOKEN",
-          "ENCRYPTION_KEY",
-          "GOOGLE_CLIENT_ID",
-          "GOOGLE_CLIENT_SECRET",
-          "MAIN_EMAIL"
-        ]
-      },
-      "envMapping": {
-        "TURSO_DB_NAME": "empresario-virtual",
-        "VERCEL_PROJECT_NAME": "empresario-virtual",
-        "GITHUB_REPO": "lasucursaldelcafe-droid/empresario-virtual"
-      },
-      "urls": {
-        "github": "https://github.com/lasucursaldelcafe-droid/empresario-virtual",
-        "vercel": "https://empresario-virtual.vercel.app"
-      },
-      "cursorAutomations": [
-        "EV — Sesión dev matutina",
-        "EV — Check credenciales semanal",
-        "EV — Revisión de PR / Post-merge",
-        "EV — Pre-commit manual"
-      ]
-    },
-    {
-      "id": "mas-cafe",
-      "name": "Más Café",
-      "type": "app",
-      "description": "Web Más Café + Google Wallet / fidelización",
-      "repo": "lasucursaldelcafe-droid/WEb-mas-cafe",
-      "localDir": "WEb-mas-cafe",
-      "stack": ["Next.js", "Firebase", "Supabase", "Google Wallet"],
-      "status": "active",
-      "setup": {
-        "install": "npm install",
-        "init": null,
-        "deploy": "npm run setup:autonomous",
-        "deployRequires": ["GODADDY_API_KEY", "GITHUB_TOKEN"],
-        "githubSecrets": ["VERCEL_TOKEN", "VERCEL_ORG_ID", "VERCEL_PROJECT_ID"]
-      },
-      "envMapping": {
-        "VERCEL_PROJECT_NAME": "w-eb-mas-cafe",
-        "GITHUB_REPO": "lasucursaldelcafe-droid/WEb-mas-cafe"
-      },
-      "urls": {
-        "github": "https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe",
-        "production": "https://w-eb-mas-cafe.vercel.app"
-      }
-    },
-    {
-      "id": "feria-cafe",
-      "name": "Feria Café — Inscripciones",
-      "type": "app",
-      "description": "Formularios Feria y Switch Championship",
-      "repo": "lasucursaldelcafe-droid/feria-cafe-inscripcion",
-      "localDir": "feria-cafe-inscripcion",
-      "stack": ["HTML estático", "Firebase", "Google Sheets", "Apps Script"],
-      "status": "active",
-      "setup": {
-        "install": null,
-        "init": null,
-        "deploy": null,
-        "githubSecrets": []
-      },
-      "urls": {
-        "github": "https://github.com/lasucursaldelcafe-droid/feria-cafe-inscripcion"
-      },
-      "notes": "Sin package.json — deploy vía Firebase. Ver INTEGRACION-FIREBASE.md en el repo."
-    },
+  "note": "Índice informativo. Cada plataforma tiene setup independiente en su propio repo.",
+  "platforms": [
     {
       "id": "colombia-green-coffee",
-      "name": "Colombia Green Coffee",
-      "type": "app",
-      "description": "Marketplace y seguimiento de café verde — tiendas, logística, maquila",
+      "name": "Colombia Green Coffee (Coffee Hunter)",
       "repo": "lasucursaldelcafe-droid/Coffee-hunter-cov2",
       "localDir": "Coffee-hunter-cov2",
-      "stack": ["Next.js 16", "Drizzle", "Turso", "Zod", "GitHub Pages", "Vercel"],
-      "status": "active",
-      "setup": {
-        "install": "npm install",
-        "init": "npm run setup && npm run db:init",
-        "deploy": "npm run setup:all",
-        "deployRequires": ["VERCEL_TOKEN"],
-        "githubSecrets": [
-          "VERCEL_TOKEN",
-          "VERCEL_ORG_ID",
-          "VERCEL_PROJECT_ID",
-          "TURSO_DATABASE_URL",
-          "TURSO_AUTH_TOKEN",
-          "ENCRYPTION_KEY",
-          "NEXT_PUBLIC_APP_URL",
-          "SHEETS_WEB_APP_URL"
-        ]
-      },
-      "envMapping": {
-        "TURSO_DB_NAME": "colombia-green-coffee",
-        "VERCEL_PROJECT_NAME": "colombia-green-coffee",
-        "GITHUB_REPO": "lasucursaldelcafe-droid/Coffee-hunter-cov2"
-      },
+      "setupCommand": "npm run setup:all",
       "urls": {
-        "github": "https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2",
         "githubPages": "https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/",
-        "vercel": "https://colombia-green-coffee.vercel.app",
-        "health": "https://colombia-green-coffee.vercel.app/api/health"
+        "vercel": "https://colombia-green-coffee.vercel.app"
       },
-      "relatedRoutes": ["/logistica", "/maquila", "/catalogo", "/crear-tienda"]
+      "status": "pages-live"
     },
     {
       "id": "programa-operativo",
       "name": "Programa Operativo — Logística",
-      "type": "app",
-      "description": "Gestión de solicitudes logísticas empresariales",
       "repo": "lasucursaldelcafe-droid/Programa-de-logistca",
       "localDir": "Programa-de-logistca",
-      "stack": ["Next.js 16", "Drizzle", "Turso"],
-      "status": "scaffold",
-      "bootstrapTemplate": "templates/programa-operativo",
-      "setup": {
-        "install": "npm install",
-        "init": "npm run setup",
-        "db": "npm run db:init",
-        "deploy": null,
-        "githubSecrets": [
-          "VERCEL_TOKEN",
-          "VERCEL_ORG_ID",
-          "VERCEL_PROJECT_ID",
-          "TURSO_DATABASE_URL",
-          "TURSO_AUTH_TOKEN"
-        ]
-      },
-      "envMapping": {
-        "TURSO_DB_NAME": "programa-operativo",
-        "VERCEL_PROJECT_NAME": "programa-operativo",
-        "GITHUB_REPO": "lasucursaldelcafe-droid/Programa-de-logistca"
-      },
+      "setupCommand": "npm run setup:all",
       "urls": {
-        "github": "https://github.com/lasucursaldelcafe-droid/Programa-de-logistca"
+        "githubPages": "https://lasucursaldelcafe-droid.github.io/Programa-de-logistca/",
+        "vercel": "https://programa-de-logistica.vercel.app"
       },
-      "linkedFrom": "colombia-green-coffee:/logistica"
+      "status": "pending-pages-enable",
+      "independent": true
+    },
+    {
+      "id": "empresario-virtual",
+      "name": "Empresario Virtual",
+      "repo": "lasucursaldelcafe-droid/empresario-virtual",
+      "localDir": "empresario-virtual",
+      "setupCommand": "npm run deploy:auto",
+      "urls": {
+        "production": "https://empresario-virtual.vercel.app",
+        "health": "https://empresario-virtual.vercel.app/api/health"
+      },
+      "status": "live",
+      "independent": true
+    },
+    {
+      "id": "mas-cafe",
+      "name": "Más Café",
+      "repo": "lasucursaldelcafe-droid/WEb-mas-cafe",
+      "localDir": "WEb-mas-cafe",
+      "urls": { "production": "https://w-eb-mas-cafe.vercel.app" },
+      "status": "live",
+      "independent": true
+    },
+    {
+      "id": "feria-cafe",
+      "name": "Feria Café Inscripciones",
+      "repo": "lasucursaldelcafe-droid/feria-cafe-inscripcion",
+      "localDir": "feria-cafe-inscripcion",
+      "status": "live-firebase",
+      "independent": true
     }
   ]
 }

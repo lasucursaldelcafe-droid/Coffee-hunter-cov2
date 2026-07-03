@@ -1,97 +1,60 @@
 # Colombia Green Coffee — Guía para agentes IA
 
+**Este repo es SOLO Colombia Green Coffee (Coffee Hunter).**  
+No incluye Empresario Virtual ni Programa Operativo — cada uno tiene su propio repositorio.
+
+| Plataforma | Repo |
+|------------|------|
+| **Este proyecto** | Coffee-hunter-cov2 |
+| Empresario Virtual | [empresario-virtual](https://github.com/lasucursaldelcafe-droid/empresario-virtual) |
+| Programa Operativo (logística) | [Programa-de-logistca](https://github.com/lasucursaldelcafe-droid/Programa-de-logistca) |
+
+Índice de repos: [`docs/00-REPOS-INDEPENDIENTES.md`](docs/00-REPOS-INDEPENDIENTES.md)
+
 <!-- BEGIN:nextjs-agent-rules -->
 ## Next.js 16
 
-Este proyecto usa **Next.js 16** con cambios respecto a versiones anteriores. Antes de escribir código, revisa `node_modules/next/dist/docs/` si hay dudas sobre APIs o convenciones.
+Este proyecto usa **Next.js 16**. Antes de escribir código, revisa `node_modules/next/dist/docs/` si hay dudas.
 <!-- END:nextjs-agent-rules -->
 
-## Ecosistema La Sucursal del Café
+## URLs
 
-**Mapa completo:** [`docs/00-ECOSISTEMA.md`](docs/00-ECOSISTEMA.md)
-
-| Proyecto | Repo | Rol |
-|----------|------|-----|
-| **La Sucursal** (marca) | Firebase `la-sucursal-del-cafe` | Identidad + contacto central |
-| **Empresario Virtual** | [empresario-virtual](https://github.com/lasucursaldelcafe-droid/empresario-virtual) | 8 agentes IA microempresas |
-| **Más Café** | [WEb-mas-cafe](https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe) | Web + wallet fidelización |
-| **Feria Café** | [feria-cafe-inscripcion](https://github.com/lasucursaldelcafe-droid/feria-cafe-inscripcion) | Inscripciones eventos |
-| **Colombia Green Coffee** | **este repo** | Seguimiento café verde / marketplace |
-| **Programa Operativo** | [Programa-de-logistca](https://github.com/lasucursaldelcafe-droid/Programa-de-logistca) | Logística empresarial |
-
-### Setup de todo el ecosistema (PC del usuario)
-
-```powershell
-copy .env.ecosystem.example C:\Users\LENOVO\Projects\.env.ecosystem.local
-.\scripts\ecosystem\setup-ecosystem.ps1
-```
-
-```bash
-npm run setup:ecosystem
-npm run verify:ecosystem
-```
-
-Manifest machine-readable: `scripts/ecosystem/manifest.json`
-
-## Este repositorio
-
-| Recurso | URL |
+| Entorno | URL |
 |---------|-----|
-| **GitHub** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2 |
-| **GitHub Pages** | https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/ |
-| **Vercel** | https://colombia-green-coffee.vercel.app (tras `setup:all`) |
-| **Rama principal** | `main` |
+| GitHub Pages (estático) | https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/ |
+| Vercel (API + Turso) | https://colombia-green-coffee.vercel.app (tras `setup:all`) |
+| Rama | `main` |
 
-## Stack (alineado con empresario-virtual)
+## Stack
 
 - Next.js 16 App Router + TypeScript strict
 - Tailwind CSS v4
-- Drizzle ORM + SQLite local / Turso en producción
-- Zod para validación de APIs
-- Vercel + GitHub Pages para deploy
+- Drizzle ORM + SQLite local / Turso producción
+- Zod · GitHub Pages + Vercel
 
-## Estructura
-
-```
-src/
-├── app/           # Páginas y API routes
-├── components/    # UI reutilizable
-├── lib/
-│   ├── db/        # Drizzle schema + conexión dual SQLite/Turso
-│   ├── validations/  # Esquemas Zod
-│   └── stores/    # Lógica de negocio (registro tiendas)
-docs/              # Documentación numerada (00 = ecosistema)
-scripts/
-├── setup-all.mjs  # Setup solo este repo
-└── ecosystem/     # Setup multi-proyecto
-```
-
-## Convenciones de código
-
-1. **Validación**: toda API pública valida entrada con Zod (`src/lib/validations/`)
-2. **Lógica de negocio**: en `src/lib/` — las rutas API deben ser delgadas
-3. **Base de datos**: usar `initDatabase()` antes de queries; no JSON en disco
-4. **Idioma UI**: español; nombres de código en inglés
-5. **No inline imports** — imports al inicio del archivo
-
-## Scripts clave
+## Setup (solo este repo)
 
 ```bash
-npm run setup           # .env.local + ENCRYPTION_KEY (este repo)
-npm run setup:all       # Turso + Vercel + GitHub + deploy (este repo)
-npm run setup:ecosystem # Todos los proyectos del ecosistema
-npm run verify:ecosystem
+npm install
+npm run setup:all    # Turso + Vercel + GitHub secrets
 npm run db:init
 npm run dev
-npm run deploy:auto
 ```
 
-## Cursor Cloud Agents
+## Scripts
 
-Tras `setup:ecosystem` o `setup:all`, pegar `cursor-secrets-ecosystem.local.txt` en  
-https://cursor.com/dashboard → Cloud Agents → Secrets
+```bash
+npm run setup:all       # Deploy completo
+npm run verify:ecosystem  # Verifica URLs (informativo)
+npm run deploy:auto
+npm run ci:validate
+```
 
-## Referencia de diseño
+## Nota sobre `/logistica`
 
-Inspirado en [Colombian Coffee Hunter](https://www.colombiancoffeehunter.com/es):
-paleta crema `#f7e9e0`, café `#68190e`, verde `#2d5a27`.
+La página `/logistica` es **contenido marketing** de exportación internacional de café dentro de este sitio.  
+La **app de logística empresarial** vive en el repo **Programa-de-logistca** — no modificarla desde aquí.
+
+## Diseño
+
+Paleta: crema `#f7e9e0`, café `#68190e`, verde `#2d5a27` (inspirado en colombiancoffeehunter.com).

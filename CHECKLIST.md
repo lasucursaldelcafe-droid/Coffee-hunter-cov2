@@ -1,58 +1,37 @@
-# Checklist — Ecosistema La Sucursal del Café
+# Checklist — Colombia Green Coffee (este repo)
 
-## Mapa rápido
+> Empresario Virtual y Programa Operativo tienen **repos propios**. Ver `docs/00-REPOS-INDEPENDIENTES.md`.
 
-Ver [`docs/00-ECOSISTEMA.md`](docs/00-ECOSISTEMA.md) para el inventario completo.
-
-| Proyecto | Deploy público | Setup |
-|----------|----------------|-------|
-| Colombia Green Coffee | ✅ [Pages](https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/) | `npm run setup:all` |
-| Más Café | ✅ [Vercel](https://w-eb-mas-cafe.vercel.app) | `setup:ecosystem --project=mas-cafe` |
-| Empresario Virtual | Vercel | `setup:ecosystem --project=empresario-virtual` |
-| Feria Café | Firebase | Manual — ver repo |
-| Programa Operativo | Pendiente | `setup:ecosystem --project=programa-operativo` |
-
-## Un comando — todo el ecosistema
-
-```powershell
-copy .env.ecosystem.example C:\Users\LENOVO\Projects\.env.ecosystem.local
-# Editar tokens: VERCEL_TOKEN, TURSO_PLATFORM_TOKEN, GOOGLE_*
-.\scripts\ecosystem\setup-ecosystem.ps1
-```
-
-```bash
-npm run setup:ecosystem
-npm run verify:ecosystem
-```
-
-## Colombia Green Coffee (este repo)
+## Estado Coffee Hunter
 
 - [x] Código en `main`
-- [x] CI automático
-- [x] **GitHub Pages live**
-- [ ] Vercel + Turso (ejecutar `npm run setup:all` en PC con `.env.local`)
+- [x] GitHub Pages live
+- [ ] Vercel + Turso → `npm run setup:all` en **este repo**
 
-### URL pública
+**URL:** https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/
 
-**https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/**
+## Setup (solo Coffee Hunter)
 
-### Workflows
+```powershell
+cd C:\Users\LENOVO\Projects\Coffee-hunter-cov2
+npm run setup:all
+npm run dev
+```
 
-| Workflow | Trigger | Destino |
-|----------|---------|---------|
-| `deploy-github-pages.yml` | push `main` | GitHub Pages |
-| `ci.yml` | push / PR | Validación |
-| `deploy-vercel.yml` | push `main` | Vercel (si secrets) |
+## Otras plataformas (repos separados)
 
-## Cursor Cloud Agents
-
-1. Ejecutar `setup:ecosystem` o `setup:all`
-2. Pegar `cursor-secrets-ecosystem.local.txt` en Cursor Dashboard
-3. Conectar GitHub Integration por repo
+| Plataforma | Repo | Setup | Live |
+|------------|------|-------|------|
+| Empresario Virtual | empresario-virtual | `npm run deploy:auto` | ✅ empresario-virtual.vercel.app |
+| Programa Operativo | Programa-de-logistca | `npm run setup:all` | ⏸ Activar Pages |
+| Más Café | WEb-mas-cafe | ver README | ✅ w-eb-mas-cafe.vercel.app |
 
 ## Verificar
 
 ```bash
 npm run verify:ecosystem
-curl -sI https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/ | head -1
 ```
+
+## Limpieza PC
+
+Ver `docs/08-LIMPIEZA-PC.md`

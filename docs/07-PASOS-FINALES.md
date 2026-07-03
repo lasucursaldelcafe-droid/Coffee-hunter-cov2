@@ -1,75 +1,62 @@
-# Pasos finales — dejar todo funcional
+# Pasos finales — Colombia Green Coffee
 
-Ejecuta esto **una sola vez** en tu PC con las credenciales que ya tienes guardadas.
+**Solo este repositorio.** Para Empresario Virtual o Programa Operativo, ve a su repo.
 
-## 1. Credenciales compartidas
+## 1. Credenciales en `.env.local`
 
 ```powershell
-copy C:\Users\LENOVO\Projects\Coffee-hunter-cov2\.env.ecosystem.example C:\Users\LENOVO\Projects\.env.ecosystem.local
-notepad C:\Users\LENOVO\Projects\.env.ecosystem.local
+cd C:\Users\LENOVO\Projects\Coffee-hunter-cov2
+copy .env.example .env.local
+notepad .env.local
 ```
 
-Completa al menos:
-
-| Variable | Dónde obtenerla |
-|----------|-----------------|
+| Variable | Dónde |
+|----------|-------|
 | `VERCEL_TOKEN` | https://vercel.com/account/tokens |
 | `TURSO_PLATFORM_TOKEN` | https://turso.tech/app → Settings → Tokens |
-| `GOOGLE_CLIENT_ID` | Google Cloud Console (mismo que Empresario Virtual) |
-| `GOOGLE_CLIENT_SECRET` | Google Cloud Console |
 
-## 2. Setup completo del ecosistema
+## 2. Deploy completo
 
 ```powershell
-cd C:\Users\LENOVO\Projects\Coffee-hunter-cov2
-git pull origin main
-.\scripts\ecosystem\setup-ecosystem.ps1
-```
-
-Esto configura: Empresario Virtual, Más Café, Feria Café, Colombia Green Coffee y Programa Operativo.
-
-## 3. Publicar bootstrap Programa Operativo
-
-Si el script indica push manual:
-
-```powershell
-cd C:\Users\LENOVO\Projects\Programa-de-logistca
-git push origin main
-```
-
-## 4. Deploy Vercel + Turso (Colombia Green Coffee)
-
-```powershell
-cd C:\Users\LENOVO\Projects\Coffee-hunter-cov2
 npm run setup:all
 ```
 
-## 5. Cursor Cloud Agents
+## 3. Desarrollo local
 
-Abre `cursor-secrets-ecosystem.local.txt` y pega cada línea en:  
-https://cursor.com/dashboard → Cloud Agents → Secrets
+```powershell
+npm run db:init
+npm run dev
+```
 
-## 6. Verificar
+http://localhost:3000/api/health → `{"status":"ok",...}`
+
+## 4. Verificar
 
 ```powershell
 npm run verify:ecosystem
+curl -sI https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/ | findstr HTTP
 ```
 
-URLs esperadas:
+---
 
-| Proyecto | URL | Estado esperado |
-|----------|-----|-----------------|
-| Colombia Green Coffee | https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/ | 200 |
-| Más Café | https://w-eb-mas-cafe.vercel.app | 200 |
-| Colombia Green Coffee API | https://colombia-green-coffee.vercel.app/api/health | 200 (tras setup:all) |
+## Empresario Virtual (repo aparte)
 
-## Automatizaciones Cursor (Empresario Virtual)
+```powershell
+cd C:\Users\LENOVO\Projects\empresario-virtual
+npm run deploy:auto
+```
 
-Ya configuradas con `memoryEnabled: true`:
+Live: https://empresario-virtual.vercel.app
 
-- EV — Sesión dev matutina (lun–vie)
-- EV — Check credenciales semanal (lunes)
-- EV — Revisión PR / Post-merge
-- EV — Pre-commit manual
+## Programa Operativo (repo aparte)
 
-Conecta GitHub Integration para cada repo en Cursor Dashboard.
+```powershell
+cd C:\Users\LENOVO\Projects\Programa-de-logistca
+npm run setup:all
+```
+
+Activar Pages: GitHub → Settings → Pages → branch `gh-pages` → root
+
+---
+
+Ver también: [`08-LIMPIEZA-PC.md`](./08-LIMPIEZA-PC.md)

@@ -1,90 +1,45 @@
 #!/usr/bin/env node
 /**
- * Verifica URLs y estado de repos del ecosistema
+ * Índice de repos — NO ejecuta setup cruzado.
+ * Cada plataforma se configura en su propio repositorio.
+ *
+ * Uso: npm run verify:ecosystem
  */
-import { existsSync } from "fs";
-import { join } from "path";
-import {
-  loadEcosystemEnv,
-  filterProjects,
-  parseArgs,
-  getProjectPath,
-  tryCapture,
-  hasValue,
-  REPO_ROOT,
-} from "./lib/ecosystem.mjs";
+import { readFileSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+import { tryCapture } from "../lib/run.mjs";
 
-const CHECKS = [
-  {
-    name: "Colombia Green Coffee (Pages)",
-    url: "https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/",
-    expect: "200",
-  },
-  {
-    name: "Más Café (Vercel)",
-    url: "https://w-eb-mas-cafe.vercel.app/",
-    expect: "200",
-  },
-  {
-    name: "Colombia Green Coffee (Vercel health)",
-    url: "https://colombia-green-coffee.vercel.app/api/health",
-    expect: "200",
-    optional: true,
-  },
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const manifest = JSON.parse(readFileSync(join(__dirname, "manifest.json"), "utf8"));
+
+const URL_CHECKS = [
+  { name: "Coffee Hunter (Pages)", url: "https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/", platform: "colombia-green-coffee" },
+  { name: "Empresario Virtual", url: "https://empresario-virtual.vercel.app/api/health", platform: "empresario-virtual" },
+  { name: "Más Café", url: "https://w-eb-mas-cafe.vercel.app/", platform: "mas-cafe" },
+  { name: "Programa Operativo (Pages)", url: "https://lasucursaldelcafe-droid.github.io/Programa-de-logistca/", platform: "programa-operativo", optional: true },
+  { name: "Coffee Hunter (Vercel API)", url: "https://colombia-green-coffee.vercel.app/api/health", platform: "colombia-green-coffee", optional: true },
 ];
 
-function checkUrl(name, url, expectStatus, optional) {
-  const head = tryCapture(`curl -sI -o /dev/null -w "%{http_code}" "${url}" 2>/dev/null`);
-  const code = head?.trim() || "ERR";
-  const ok = code === expectStatus;
-  const icon = ok ? "✅" : optional ? "⏸" : "❌";
-  console.log(`  ${icon} ${name}: ${code} — ${url}`);
+function checkUrl(name, url, optional) {
+  const code = tryCapture(`curl -sI -o /dev/null -w "%{http_code}" "${url}" 2>/dev/null`)?.trim() || "ERR";
+  const ok = code === "200";
+  console.log(`  ${ok ? "✅" : optional ? "⏸" : "❌"} ${name}: ${code}`);
   return ok || optional;
 }
 
-function checkLocalRepo(project, projectsRoot) {
-  const dest = getProjectPath(projectsRoot, project);
-  const exists = existsSync(dest);
-  const hasPkg = exists && existsSync(join(dest, "package.json"));
-  const hasEnv = exists && existsSync(join(dest, ".env.local"));
-  const icon = exists ? (hasPkg ? "✅" : "📁") : "❌";
-  console.log(
-    `  ${icon} ${project.name}: ${exists ? dest : "no clonado"}${hasPkg ? " + npm" : ""}${hasEnv ? " + .env.local" : ""}`,
-  );
-  return exists;
+console.log("Plataformas La Sucursal — verificación (repos independientes)\n");
+
+console.log("--- URLs ---");
+for (const c of URL_CHECKS) checkUrl(c.name, c.url, c.optional);
+
+console.log("\n--- Setup por repo (ejecutar EN CADA CARPETA) ---");
+for (const p of manifest.platforms) {
+  const cmd = p.setupCommand || "(ver README del repo)";
+  console.log(`  • ${p.name}`);
+  console.log(`    cd .../${p.localDir}`);
+  console.log(`    ${cmd}`);
 }
 
-async function main() {
-  const args = parseArgs(process.argv);
-  const { manifest, projectsRoot } = loadEcosystemEnv();
-  const projects = filterProjects(manifest, args.project);
-
-  console.log("Verificación ecosistema La Sucursal del Café\n");
-
-  console.log("--- URLs públicas ---");
-  let urlOk = true;
-  for (const c of CHECKS) {
-    if (!checkUrl(c.name, c.url, c.expect, c.optional)) {
-      if (!c.optional) urlOk = false;
-    }
-  }
-
-  console.log("\n--- Repos locales ---");
-  let localOk = true;
-  for (const p of projects) {
-    if (!checkLocalRepo(p, projectsRoot)) localOk = false;
-  }
-
-  console.log("\n--- Resumen ---");
-  if (urlOk && localOk) {
-    console.log("  ✅ Ecosistema operativo");
-  } else if (!localOk) {
-    console.log("  ⏸ Ejecuta: npm run setup:ecosystem");
-  } else {
-    console.log("  ⏸ Algunas URLs pendientes — revisa Vercel secrets / deploy");
-  }
-
-  console.log("\n  Mapa completo: docs/00-ECOSISTEMA.md");
-}
-
-main();
+console.log("\n  Docs: docs/00-REPOS-INDEPENDIENTES.md");
+console.log("  Limpieza PC: docs/08-LIMPIEZA-PC.md");

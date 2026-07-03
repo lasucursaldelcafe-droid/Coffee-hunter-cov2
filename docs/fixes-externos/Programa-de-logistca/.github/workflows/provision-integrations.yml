@@ -1,0 +1,87 @@
+name: Provisionar integraciones
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/setup-*.ts"
+      - "scripts/turso-client.ts"
+      - ".github/workflows/provision-integrations.yml"
+
+jobs:
+  turso:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Comprobar TURSO_PLATFORM_TOKEN
+        id: turso
+        env:
+          TURSO_PLATFORM_TOKEN: ${{ secrets.TURSO_PLATFORM_TOKEN }}
+        run: |
+          if [ -n "$TURSO_PLATFORM_TOKEN" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Turso omitido — configura TURSO_PLATFORM_TOKEN"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.turso.outputs.ready == 'true'
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+        if: steps.turso.outputs.ready == 'true'
+
+      - name: Crear BD Turso y esquema
+        if: steps.turso.outputs.ready == 'true'
+        env:
+          TURSO_PLATFORM_TOKEN: ${{ secrets.TURSO_PLATFORM_TOKEN }}
+          TURSO_ORG: ${{ vars.TURSO_ORG || 'empresario-virtual' }}
+          TURSO_DB_NAME: programa-de-logistica
+        run: npx tsx scripts/setup-turso.ts
+
+  static-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Comprobar GOOGLE_CLIENT_ID
+        id: google
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+        run: |
+          if [ -n "$GOOGLE_CLIENT_ID" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Google omitido — configura GOOGLE_CLIENT_ID"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.google.outputs.ready == 'true'
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+        if: steps.google.outputs.ready == 'true'
+
+      - name: Inyectar Google Client ID
+        if: steps.google.outputs.ready == 'true'
+        env:
+          NEXT_PUBLIC_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GITHUB_PAGES_BASE: /Programa-de-logistca
+        run: npx tsx scripts/inject-static-config.ts
+
+      - name: Commit config.js actualizado
+        if: steps.google.outputs.ready == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/config.js
+          git diff --staged --quiet || git commit -m "chore: inyectar GOOGLE_CLIENT_ID en config estática [skip ci]"
+          git push

@@ -21,7 +21,6 @@
     "setup:github-secrets": "node scripts/setup-github-secrets.mjs",
     "setup:tokens": "node scripts/setup-tokens.mjs",
     "setup:all": "node scripts/setup-all.mjs",
-    "setup:ecosystem": "node scripts/ecosystem/setup-ecosystem.mjs",
     "verify:ecosystem": "node scripts/ecosystem/verify-ecosystem.mjs"
   },
   "dependencies": {
