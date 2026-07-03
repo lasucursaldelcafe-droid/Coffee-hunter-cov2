@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:"$Sreact.suspense"
+3:I[8140,["/Coffee-hunter-cov2/_next/static/chunks/3x_d7zpggfmtl.js","/Coffee-hunter-cov2/_next/static/chunks/14mrh2-p_w84d.js","/Coffee-hunter-cov2/_next/static/chunks/2_h1_ws5e31kf.js"],"CatalogoContent"]
+4:I[97367,["/Coffee-hunter-cov2/_next/static/chunks/3x_d7zpggfmtl.js","/Coffee-hunter-cov2/_next/static/chunks/14mrh2-p_w84d.js"],"OutletBoundary"]
+0:{"rsc":["$","$1","c",{"children":[["$","$2",null,{"fallback":["$","div",null,{"className":"py-20 text-center text-foreground/60","children":"Cargando catálogo..."}],"children":["$","$L3",null,{}]}],[["$","script","script-0",{"src":"/Coffee-hunter-cov2/_next/static/chunks/2_h1_ws5e31kf.js","async":true}]],["$","$L4",null,{"children":["$","$2",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"1lBE2sv3T2BX0ebnbuAxh"}
+5:null
