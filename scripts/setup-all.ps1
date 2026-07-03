@@ -58,11 +58,11 @@ if (-not (Test-Path $envLocal)) {
 $requiredVars = @("VERCEL_TOKEN")
 $envContent = Get-Content $envLocal -Raw
 foreach ($var in $requiredVars) {
-    if ($envContent -notmatch "$var=.+") {
-        throw "Missing $var in .env.local — add your Vercel token first."
+    if ($envContent -notmatch "(?m)^${var}=.+") {
+        throw "Falta ${var} en .env.local — descomenta la linea y pega tu token (no dejes # al inicio)."
     }
 }
-Write-Host "  OK .env.local (VERCEL_TOKEN present)"
+Write-Host "  OK .env.local ($($requiredVars -join ', ') presentes)"
 
 # --- npm install ---
 Write-Host "`n[3/5] npm install..." -ForegroundColor Yellow
