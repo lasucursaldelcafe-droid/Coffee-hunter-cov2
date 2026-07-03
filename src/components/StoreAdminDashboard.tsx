@@ -11,6 +11,7 @@ import { StoreProfileEditor, type StoreProfileData } from "@/components/StorePro
 import { StoreBlogManager } from "@/components/StoreBlogManager";
 import { StorePagesManager } from "@/components/StorePagesManager";
 import type { PurchaseLocation, SocialLinks } from "@/lib/stores/social";
+import { getTemplatePreset } from "@/lib/stores/templates";
 
 interface SerializedProduct {
   id: string;
@@ -65,6 +66,7 @@ interface StoreData {
   physicalCountry: string | null;
   purchaseLocations: PurchaseLocation[];
   socialLinks: SocialLinks;
+  storeTemplate: string;
   security: { hasPassword: boolean; emailVerified: boolean; setupComplete: boolean };
 }
 
@@ -247,7 +249,7 @@ export function StoreAdminDashboard({ slug }: StoreAdminDashboardProps) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="font-display text-2xl font-bold text-coffee">{store.storeName}</h1>
-          <p className="text-sm text-foreground/60">Coffee Shop avanzado · comisión 8% por venta</p>
+          <p className="text-sm text-foreground/60">{getTemplatePreset(store.storeTemplate).label} · comisión 8% por venta</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <Link href={`/tiendas/${slug}`} target="_blank" className="px-4 py-2 border border-cream rounded-full text-sm font-semibold text-coffee hover:bg-cream">
@@ -309,7 +311,14 @@ export function StoreAdminDashboard({ slug }: StoreAdminDashboardProps) {
         </div>
       )}
 
-      {tab === "apariencia" && <StoreThemeEditor theme={theme} storeName={store.storeName} onSave={handleThemeSave} />}
+      {tab === "apariencia" && (
+        <StoreThemeEditor
+          theme={theme}
+          storeName={store.storeName}
+          storeTemplate={store.storeTemplate ?? "advanced"}
+          onSave={handleThemeSave}
+        />
+      )}
       {tab === "perfil" && <StoreProfileEditor initial={profileInitial} onSave={handleProfileSave} />}
       {tab === "blog" && <StoreBlogManager slug={slug} token={token} initialPosts={blogPosts} onRefresh={refresh} />}
       {tab === "paginas" && <StorePagesManager slug={slug} token={token} initialPages={pages} onRefresh={refresh} />}

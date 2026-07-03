@@ -20,6 +20,9 @@ export const storeProductSchema = z.object({
 export type StoreProductInput = z.infer<typeof storeProductSchema>;
 
 export const storeThemeSchema = z.object({
+  storeTemplate: z
+    .enum(["advanced", "casa_del_cafe", "pergamino", "tropicalia", "starbucks", "juan_valdez"])
+    .optional(),
   themePrimaryColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
   themeAccentColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
   themeBackgroundColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
