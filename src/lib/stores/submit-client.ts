@@ -2,10 +2,15 @@ export interface StoreFormData {
   storeName: string;
   ownerName: string;
   email: string;
+  phone?: string;
   country: string;
+  city?: string;
   specialty: string;
-  plan: string;
+  businessType: string;
+  retailChannel?: string;
+  monthlyVolumeKg?: number;
   description: string;
+  acceptCommission: boolean;
 }
 
 const STORAGE_KEY = "cgc_pending_stores";
@@ -13,7 +18,6 @@ const STORAGE_KEY = "cgc_pending_stores";
 export async function submitStoreRegistration(form: StoreFormData): Promise<void> {
   const sheetsUrl = process.env.NEXT_PUBLIC_SHEETS_WEB_APP_URL;
 
-  // 1. API Next.js (Vercel / servidor Node)
   try {
     const res = await fetch("/api/tiendas", {
       method: "POST",
@@ -29,10 +33,8 @@ export async function submitStoreRegistration(form: StoreFormData): Promise<void
     if (err instanceof Error && err.message.includes("Correo ya registrado")) {
       throw err;
     }
-    // Continúa con fallback (GitHub Pages / estático)
   }
 
-  // 2. Google Sheets (patrón feria-cafe-inscripcion)
   if (sheetsUrl) {
     const res = await fetch(sheetsUrl, {
       method: "POST",
@@ -43,7 +45,6 @@ export async function submitStoreRegistration(form: StoreFormData): Promise<void
     throw new Error("No se pudo enviar el formulario. Intenta de nuevo.");
   }
 
-  // 3. localStorage (offline / demo)
   if (typeof window !== "undefined") {
     const pending = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]") as StoreFormData[];
     const duplicate = pending.some((p) => p.email.toLowerCase() === form.email.toLowerCase());

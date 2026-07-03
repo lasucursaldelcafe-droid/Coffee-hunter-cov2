@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 
 const navLinks = [
-  { href: "/catalogo", label: "Catálogo" },
-  { href: "/tiendas", label: "Coffee Shops" },
+  { href: "/catalogo", label: "Comprar" },
+  { href: "/tiendas", label: "Tiendas" },
+  { href: "/panel", label: "Vender" },
   { href: "/logistica", label: "Logística" },
-  { href: "/maquila", label: "Maquila" },
   { href: "/nosotros", label: "Nosotros" },
 ];
 
@@ -46,16 +46,16 @@ export function Header() {
 
           <div className="hidden lg:flex items-center gap-3">
             <Link
-              href="/crear-tienda"
+              href="/catalogo"
               className="text-sm font-medium text-coffee hover:text-coffee-dark transition-colors"
             >
-              Iniciar sesión
+              Explorar catálogo
             </Link>
             <Link
               href="/crear-tienda"
               className="px-5 py-2.5 bg-coffee text-white text-sm font-semibold rounded-full hover:bg-coffee-dark transition-colors"
             >
-              Crear mi tienda
+              Crear tienda gratis
             </Link>
           </div>
 

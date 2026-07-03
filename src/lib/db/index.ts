@@ -5,6 +5,7 @@ import { drizzle as drizzleLibsql } from "drizzle-orm/libsql";
 import fs from "fs";
 import path from "path";
 import * as schema from "./schema";
+import { migrateLibsql, migrateSqlite } from "./migrate";
 
 type DbInstance = ReturnType<typeof drizzleSqlite<typeof schema>>;
 
@@ -66,8 +67,13 @@ const INIT_SQL = `
     owner_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     country TEXT NOT NULL,
+    city TEXT DEFAULT '',
+    phone TEXT DEFAULT '',
     specialty TEXT NOT NULL,
-    plan TEXT NOT NULL DEFAULT 'Starter',
+    business_type TEXT NOT NULL DEFAULT 'tostador',
+    retail_channel TEXT DEFAULT '',
+    monthly_volume_kg INTEGER,
+    commission_rate REAL NOT NULL DEFAULT 0.08,
     description TEXT DEFAULT '',
     status TEXT NOT NULL DEFAULT 'pending',
     created_at INTEGER NOT NULL
@@ -83,6 +89,36 @@ const INIT_SQL = `
     status TEXT NOT NULL DEFAULT 'pending',
     created_at INTEGER NOT NULL
   );
+  CREATE TABLE IF NOT EXISTS retail_sales_reports (
+    id TEXT PRIMARY KEY,
+    store_id TEXT,
+    store_email TEXT NOT NULL,
+    store_name TEXT NOT NULL,
+    period_month TEXT NOT NULL,
+    channel TEXT NOT NULL,
+    product_name TEXT NOT NULL,
+    units_sold INTEGER,
+    kg_sold REAL NOT NULL,
+    avg_price_usd REAL,
+    city TEXT DEFAULT '',
+    region TEXT DEFAULT '',
+    notes TEXT DEFAULT '',
+    created_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS buyer_inquiries (
+    id TEXT PRIMARY KEY,
+    product_id TEXT NOT NULL,
+    product_name TEXT NOT NULL,
+    buyer_name TEXT NOT NULL,
+    company TEXT DEFAULT '',
+    email TEXT NOT NULL,
+    country TEXT NOT NULL,
+    channel TEXT NOT NULL,
+    volume_kg INTEGER,
+    message TEXT DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'pending',
+    created_at INTEGER NOT NULL
+  );
 `;
 
 export async function initDatabase(): Promise<void> {
@@ -90,6 +126,7 @@ export async function initDatabase(): Promise<void> {
     getDb();
     if (libsqlClient) {
       await libsqlClient.executeMultiple(INIT_SQL);
+      await migrateLibsql(libsqlClient);
     }
     return;
   }
@@ -97,5 +134,6 @@ export async function initDatabase(): Promise<void> {
   getDb();
   if (sqliteRaw) {
     sqliteRaw.exec(INIT_SQL);
+    migrateSqlite(sqliteRaw);
   }
 }

@@ -21,7 +21,7 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-up">
               <span className="inline-block px-4 py-1.5 bg-green/10 text-green text-sm font-semibold rounded-full mb-6">
-                Plataforma integral de café colombiano
+                8% por venta · $0 de suscripción
               </span>
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-coffee leading-tight mb-6">
                 Del origen al mundo,{" "}
@@ -144,10 +144,10 @@ export default function HomePage() {
               />
               <ul className="space-y-3 mb-8">
                 {[
-                  "Página de tienda personalizada en minutos",
-                  "Acceso al catálogo de café de especialidad",
-                  "Logística internacional integrada",
-                  "Planes desde gratis hasta enterprise",
+                  "Tienda profesional lista en minutos",
+                  "Comisión fija del 8% — solo cuando vendes",
+                  "Catálogo de café de especialidad incluido",
+                  "Reportes retail y logística internacional",
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-3 text-white/80">
                     <svg className="w-5 h-5 text-gold shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -161,7 +161,7 @@ export default function HomePage() {
                 href="/crear-tienda"
                 className="inline-block px-8 py-4 bg-gold text-coffee-dark font-semibold rounded-full hover:bg-gold/90 transition-colors"
               >
-                Crear mi coffee shop gratis
+                Crear tienda sin costo mensual
               </Link>
             </div>
 

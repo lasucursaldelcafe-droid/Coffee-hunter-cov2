@@ -16,8 +16,8 @@ export default function TiendasPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="Marketplace"
-          title="Coffee Shops de la plataforma"
-          description="Descubre tiendas creadas por tostadores, distribuidores y marcas que venden café colombiano de especialidad a través de Colombia Green Coffee."
+          title="Tiendas profesionales de café"
+          description="Tostadores y marcas verificadas. Modelo sin suscripción: comisión fija del 8% solo al vender. Datos retail para compradores certeros."
         />
 
         <div className="flex justify-center mb-12">
