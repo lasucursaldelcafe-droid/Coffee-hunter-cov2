@@ -46,6 +46,22 @@ npm run db:init    # Crea tablas
 npm run dev
 ```
 
+### Automatización completa (Turso + Vercel + GitHub + Cursor)
+
+Con credenciales en `.env.local`:
+
+```bash
+npm run setup:all
+```
+
+Windows PowerShell:
+
+```powershell
+.\scripts\setup-all.ps1
+```
+
+Guía: [`docs/06-AUTO-SETUP.md`](docs/06-AUTO-SETUP.md)
+
 Abre http://localhost:3000
 
 ## Documentación
@@ -53,6 +69,7 @@ Abre http://localhost:3000
 - [`docs/01-VISION.md`](docs/01-VISION.md) — Visión del producto
 - [`docs/02-ARCHITECTURE.md`](docs/02-ARCHITECTURE.md) — Arquitectura técnica
 - [`docs/03-DEPLOY.md`](docs/03-DEPLOY.md) — Deploy en Vercel + Turso
+- [`docs/06-AUTO-SETUP.md`](docs/06-AUTO-SETUP.md) — **setup:all** automatizado
 - [`AGENTS.md`](AGENTS.md) — Guía para agentes IA
 
 ## Estructura
