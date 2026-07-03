@@ -42,31 +42,28 @@ jobs:
             echo "::notice::Preview omitido — configura secrets Vercel para previews automáticos."
           fi
 
-      - name: Verificar proyecto Vercel correcto
+      - name: Resolver proyecto Vercel correcto
         if: steps.creds.outputs.ready == 'true'
-        run: |
-          PROJECT=$(curl -sf \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
-            "https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}?teamId=${VERCEL_ORG_ID}" \
-            | jq -r .name)
-          echo "Proyecto Vercel: $PROJECT (esperado: $EXPECTED_PROJECT)"
-          if [ "$PROJECT" != "$EXPECTED_PROJECT" ]; then
-            echo "::error::VERCEL_PROJECT_ID apunta a '$PROJECT', no a '$EXPECTED_PROJECT'."
-            echo "Ejecuta en tu PC: npm run setup:vercel && npm run setup:github-secrets"
-            exit 1
-          fi
+        id: project
+        run: node scripts/ci-resolve-vercel-project.mjs
 
       - name: Pull configuración Vercel
         if: steps.creds.outputs.ready == 'true'
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
         run: npx vercel@latest pull --yes --environment=preview --token="$VERCEL_TOKEN"
 
       - name: Build preview
         if: steps.creds.outputs.ready == 'true'
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
         run: npx vercel@latest build --token="$VERCEL_TOKEN"
 
       - name: Desplegar preview
         if: steps.creds.outputs.ready == 'true'
         id: deploy
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
         run: |
           URL=$(npx vercel@latest deploy --prebuilt --token="$VERCEL_TOKEN")
           echo "preview_url=$URL" >> "$GITHUB_OUTPUT"

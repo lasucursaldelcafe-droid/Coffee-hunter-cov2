@@ -49,19 +49,10 @@ jobs:
             echo "Guía: docs/07-PASOS-FINALES.md"
           fi
 
-      - name: Verificar proyecto Vercel correcto
+      - name: Resolver proyecto Vercel correcto
         if: steps.creds.outputs.ready == 'true'
-        run: |
-          PROJECT=$(curl -sf \
-            -H "Authorization: Bearer $VERCEL_TOKEN" \
-            "https://api.vercel.com/v9/projects/${VERCEL_PROJECT_ID}?teamId=${VERCEL_ORG_ID}" \
-            | jq -r .name)
-          echo "Proyecto Vercel: $PROJECT (esperado: $EXPECTED_PROJECT)"
-          if [ "$PROJECT" != "$EXPECTED_PROJECT" ]; then
-            echo "::error::VERCEL_PROJECT_ID apunta a '$PROJECT', no a '$EXPECTED_PROJECT'."
-            echo "Ejecuta en tu PC: npm run setup:vercel && npm run setup:github-secrets"
-            exit 1
-          fi
+        id: project
+        run: node scripts/ci-resolve-vercel-project.mjs
 
       - uses: actions/setup-node@v4
         if: steps.creds.outputs.ready == 'true'
@@ -75,12 +66,18 @@ jobs:
 
       - name: Pull configuración Vercel
         if: steps.creds.outputs.ready == 'true'
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
         run: npx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
 
       - name: Build artefactos
         if: steps.creds.outputs.ready == 'true'
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
         run: npx vercel@latest build --prod --token="$VERCEL_TOKEN"
 
       - name: Desplegar en Vercel (producción)
         if: steps.creds.outputs.ready == 'true'
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
         run: npx vercel@latest deploy --prebuilt --prod --token="$VERCEL_TOKEN"
