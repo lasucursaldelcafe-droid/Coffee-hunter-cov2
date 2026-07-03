@@ -8,8 +8,6 @@ import { appendFileSync } from "fs";
 const TOKEN = process.env.VERCEL_TOKEN;
 const TEAM_ID = process.env.VERCEL_ORG_ID;
 const EXPECTED = process.env.EXPECTED_PROJECT || "colombia-green-coffee";
-const GITHUB_REPO =
-  process.env.GITHUB_REPOSITORY || "lasucursaldelcafe-droid/Coffee-hunter-cov2";
 const OUTPUT = process.env.GITHUB_OUTPUT;
 
 if (!TOKEN || !TEAM_ID) {
@@ -80,7 +78,6 @@ async function findOrCreateProject() {
     body: JSON.stringify({
       name: EXPECTED,
       framework: "nextjs",
-      gitRepository: { type: "github", repo: GITHUB_REPO },
     }),
   });
   console.log(`Proyecto creado: ${EXPECTED} (${created.id})`);

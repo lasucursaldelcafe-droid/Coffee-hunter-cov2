@@ -65,10 +65,6 @@ async function findOrCreateProject(teamId) {
     body: JSON.stringify({
       name: PROJECT_NAME,
       framework: "nextjs",
-      gitRepository: {
-        type: "github",
-        repo: env.GITHUB_REPO || "lasucursaldelcafe-droid/Coffee-hunter-cov2",
-      },
     }),
   });
 }
