@@ -86,8 +86,9 @@
       "status": "active",
       "setup": {
         "install": "npm install",
-        "init": "npm run setup:autonomous",
-        "deploy": null,
+        "init": null,
+        "deploy": "npm run setup:autonomous",
+        "deployRequires": ["GODADDY_API_KEY", "GITHUB_TOKEN"],
         "githubSecrets": ["VERCEL_TOKEN", "VERCEL_ORG_ID", "VERCEL_PROJECT_ID"]
       },
       "envMapping": {
@@ -130,8 +131,9 @@
       "status": "active",
       "setup": {
         "install": "npm install",
-        "init": "npm run setup:all",
-        "deploy": "npm run deploy:auto",
+        "init": "npm run setup && npm run db:init",
+        "deploy": "npm run setup:all",
+        "deployRequires": ["VERCEL_TOKEN"],
         "githubSecrets": [
           "VERCEL_TOKEN",
           "VERCEL_ORG_ID",

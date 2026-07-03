@@ -21,6 +21,7 @@ import {
   generateCursorSecretsTemplate,
   parseArgs,
   commandExists,
+  pushProgramaBootstrap,
   REPO_ROOT,
 } from "./lib/ecosystem.mjs";
 import { run } from "../lib/run.mjs";
@@ -115,6 +116,9 @@ async function main() {
   generateCursorSecretsTemplate(projects, env, cursorOut);
   console.log(`  ✓ ${cursorOut}`);
   console.log("  → Pegar en https://cursor.com/dashboard → Cloud Agents → Secrets");
+
+  banner("Publicar Programa Operativo");
+  pushProgramaBootstrap(projectsRoot);
 
   banner("Verificación");
   run(`node scripts/ecosystem/verify-ecosystem.mjs${args.project ? ` --project=${args.project}` : ""}`, {

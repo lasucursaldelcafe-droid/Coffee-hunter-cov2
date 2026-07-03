@@ -199,6 +199,47 @@ export function runProjectSetup(project, dest, ecosystemEnv) {
       console.warn(`  ⚠ db falló — puede requerir credenciales adicionales`);
     }
   }
+
+  if (setup.deploy) {
+    const required = setup.deployRequires || [];
+    const missing = required.filter((k) => !hasValue(ecosystemEnv[k]));
+    if (missing.length) {
+      console.log(`  ⊘ deploy omitido — faltan: ${missing.join(", ")}`);
+    } else {
+      console.log(`  → ${setup.deploy}`);
+      try {
+        run(setup.deploy, { cwd: dest });
+      } catch (err) {
+        console.warn(`  ⚠ deploy falló (${project.id}): ${err.message}`);
+      }
+    }
+  }
+}
+
+export function pushProgramaBootstrap(projectsRoot) {
+  const dest = join(projectsRoot, "Programa-de-logistca");
+  if (!existsSync(join(dest, ".git"))) {
+    console.warn("  ⚠ Programa-de-logistca no clonado");
+    return false;
+  }
+
+  const status = tryCapture("git status --porcelain", { cwd: dest });
+  const ahead = tryCapture("git rev-list --count origin/main..HEAD 2>/dev/null", { cwd: dest });
+  if (!ahead || ahead.trim() === "0") {
+    console.log("  ○ Programa Operativo — sin commits pendientes de push");
+    return true;
+  }
+
+  console.log("  → git push origin main (Programa Operativo)");
+  try {
+    run("git push origin main", { cwd: dest });
+    console.log("  ✓ Bootstrap publicado en Programa-de-logistca");
+    return true;
+  } catch (err) {
+    console.warn(`  ⚠ Push manual requerido: cd ${dest} && git push origin main`);
+    console.warn(`    (${err.message})`);
+    return false;
+  }
 }
 
 export function parseArgs(argv) {

@@ -16,6 +16,8 @@ npm run verify:ecosystem
 
 Mapa de proyectos: [`00-ECOSISTEMA.md`](./00-ECOSISTEMA.md)
 
+**Pasos finales en tu PC:** [`07-PASOS-FINALES.md`](./07-PASOS-FINALES.md)
+
 ---
 
 ## Solo este repo — setup:all
