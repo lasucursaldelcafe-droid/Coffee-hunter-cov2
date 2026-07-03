@@ -6,16 +6,41 @@
 Este proyecto usa **Next.js 16** con cambios respecto a versiones anteriores. Antes de escribir código, revisa `node_modules/next/dist/docs/` si hay dudas sobre APIs o convenciones.
 <!-- END:nextjs-agent-rules -->
 
-## Repositorio y ecosistema
+## Ecosistema La Sucursal del Café
+
+**Mapa completo:** [`docs/00-ECOSISTEMA.md`](docs/00-ECOSISTEMA.md)
+
+| Proyecto | Repo | Rol |
+|----------|------|-----|
+| **La Sucursal** (marca) | Firebase `la-sucursal-del-cafe` | Identidad + contacto central |
+| **Empresario Virtual** | [empresario-virtual](https://github.com/lasucursaldelcafe-droid/empresario-virtual) | 8 agentes IA microempresas |
+| **Más Café** | [WEb-mas-cafe](https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe) | Web + wallet fidelización |
+| **Feria Café** | [feria-cafe-inscripcion](https://github.com/lasucursaldelcafe-droid/feria-cafe-inscripcion) | Inscripciones eventos |
+| **Colombia Green Coffee** | **este repo** | Seguimiento café verde / marketplace |
+| **Programa Operativo** | [Programa-de-logistca](https://github.com/lasucursaldelcafe-droid/Programa-de-logistca) | Logística empresarial |
+
+### Setup de todo el ecosistema (PC del usuario)
+
+```powershell
+copy .env.ecosystem.example C:\Users\LENOVO\Projects\.env.ecosystem.local
+.\scripts\ecosystem\setup-ecosystem.ps1
+```
+
+```bash
+npm run setup:ecosystem
+npm run verify:ecosystem
+```
+
+Manifest machine-readable: `scripts/ecosystem/manifest.json`
+
+## Este repositorio
 
 | Recurso | URL |
 |---------|-----|
-| **Este repo** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2 |
-| **PR activo** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/pull/1 |
-| **Rama de trabajo** | `cursor/colombia-green-coffee-987d` |
-| **Empresario Virtual** (patrón stack) | https://github.com/lasucursaldelcafe-droid/empresario-virtual |
-| **Feria Café** (formularios + Firebase) | https://github.com/lasucursaldelcafe-droid/feria-cafe-inscripcion |
-| **Más Café web** (Vercel + wallet) | https://github.com/lasucursaldelcafe-droid/WEb-mas-cafe |
+| **GitHub** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2 |
+| **GitHub Pages** | https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/ |
+| **Vercel** | https://colombia-green-coffee.vercel.app (tras `setup:all`) |
+| **Rama principal** | `main` |
 
 ## Stack (alineado con empresario-virtual)
 
@@ -23,7 +48,7 @@ Este proyecto usa **Next.js 16** con cambios respecto a versiones anteriores. An
 - Tailwind CSS v4
 - Drizzle ORM + SQLite local / Turso en producción
 - Zod para validación de APIs
-- Vercel para deploy
+- Vercel + GitHub Pages para deploy
 
 ## Estructura
 
@@ -35,8 +60,10 @@ src/
 │   ├── db/        # Drizzle schema + conexión dual SQLite/Turso
 │   ├── validations/  # Esquemas Zod
 │   └── stores/    # Lógica de negocio (registro tiendas)
-docs/              # Documentación numerada
-scripts/           # setup, db:init, health-check
+docs/              # Documentación numerada (00 = ecosistema)
+scripts/
+├── setup-all.mjs  # Setup solo este repo
+└── ecosystem/     # Setup multi-proyecto
 ```
 
 ## Convenciones de código
@@ -50,13 +77,19 @@ scripts/           # setup, db:init, health-check
 ## Scripts clave
 
 ```bash
-npm run setup      # Genera .env.local + ENCRYPTION_KEY
-npm run db:init    # Crea tablas SQLite
-npm run dev        # Desarrollo local
-npm run build      # Build producción
-npm run typecheck  # Verificación TypeScript
-npm run health-check  # Requiere servidor en :3000
+npm run setup           # .env.local + ENCRYPTION_KEY (este repo)
+npm run setup:all       # Turso + Vercel + GitHub + deploy (este repo)
+npm run setup:ecosystem # Todos los proyectos del ecosistema
+npm run verify:ecosystem
+npm run db:init
+npm run dev
+npm run deploy:auto
 ```
+
+## Cursor Cloud Agents
+
+Tras `setup:ecosystem` o `setup:all`, pegar `cursor-secrets-ecosystem.local.txt` en  
+https://cursor.com/dashboard → Cloud Agents → Secrets
 
 ## Referencia de diseño
 

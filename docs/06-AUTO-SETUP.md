@@ -1,6 +1,26 @@
-# Automatización completa — setup:all
+# Automatización completa — setup:all y setup:ecosystem
 
-Un solo comando configura **Turso**, **Vercel**, **GitHub Secrets**, **deploy** y genera plantilla para **Cursor Cloud Agents**.
+## Ecosistema completo (todos los proyectos)
+
+Para **Más Café**, **Empresario Virtual**, **Colombia Green Coffee**, **Programa Operativo** y más:
+
+```powershell
+copy .env.ecosystem.example C:\Users\LENOVO\Projects\.env.ecosystem.local
+.\scripts\ecosystem\setup-ecosystem.ps1
+```
+
+```bash
+npm run setup:ecosystem
+npm run verify:ecosystem
+```
+
+Mapa de proyectos: [`00-ECOSISTEMA.md`](./00-ECOSISTEMA.md)
+
+---
+
+## Solo este repo — setup:all
+
+Un solo comando configura **Turso**, **Vercel**, **GitHub Secrets**, **deploy** y genera plantilla para **Cursor Cloud Agents** en Colombia Green Coffee.
 
 ## Requisitos en tu PC
 
