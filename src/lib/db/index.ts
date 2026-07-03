@@ -64,6 +64,9 @@ const INIT_SQL = `
     id TEXT PRIMARY KEY,
     slug TEXT NOT NULL UNIQUE,
     admin_token TEXT NOT NULL UNIQUE,
+    password_hash TEXT,
+    email_verified INTEGER NOT NULL DEFAULT 0,
+    email_verification_token TEXT,
     store_name TEXT NOT NULL,
     owner_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
@@ -76,6 +79,15 @@ const INIT_SQL = `
     monthly_volume_kg INTEGER,
     commission_rate REAL NOT NULL DEFAULT 0.08,
     description TEXT DEFAULT '',
+    store_model TEXT NOT NULL DEFAULT 'coffee_shop',
+    store_template TEXT NOT NULL DEFAULT 'advanced',
+    logo_url TEXT DEFAULT '',
+    cover_image_url TEXT DEFAULT '',
+    physical_address TEXT DEFAULT '',
+    physical_city TEXT DEFAULT '',
+    physical_country TEXT DEFAULT '',
+    purchase_locations TEXT DEFAULT '[]',
+    social_links TEXT DEFAULT '{}',
     theme_primary_color TEXT DEFAULT '#68190e',
     theme_accent_color TEXT DEFAULT '#2d5a27',
     theme_background_color TEXT DEFAULT '#f7e9e0',
@@ -91,6 +103,7 @@ const INIT_SQL = `
     name TEXT NOT NULL,
     origin TEXT NOT NULL DEFAULT 'Colombia',
     description TEXT DEFAULT '',
+    image_url TEXT DEFAULT '',
     price_per_kg REAL NOT NULL,
     score REAL,
     process TEXT DEFAULT '',
@@ -142,6 +155,30 @@ const INIT_SQL = `
     message TEXT DEFAULT '',
     status TEXT NOT NULL DEFAULT 'pending',
     created_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS store_blog_posts (
+    id TEXT PRIMARY KEY,
+    store_id TEXT NOT NULL,
+    slug TEXT NOT NULL,
+    title TEXT NOT NULL,
+    excerpt TEXT DEFAULT '',
+    content TEXT DEFAULT '',
+    cover_image_url TEXT DEFAULT '',
+    published INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS store_pages (
+    id TEXT PRIMARY KEY,
+    store_id TEXT NOT NULL,
+    slug TEXT NOT NULL,
+    nav_label TEXT NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT DEFAULT '',
+    published INTEGER NOT NULL DEFAULT 0,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
   );
 `;
 

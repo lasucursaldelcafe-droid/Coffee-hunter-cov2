@@ -66,6 +66,7 @@ export async function createStoreProduct(storeId: string, input: StoreProductInp
     type: input.type,
     profile: JSON.stringify(input.profile ?? []),
     altitude: input.altitude ?? "",
+    imageUrl: input.imageUrl ?? "",
     published: input.published ?? true,
     createdAt: now,
     updatedAt: now,
@@ -93,6 +94,7 @@ export async function updateStoreProduct(
   if (input.type !== undefined) updates.type = input.type;
   if (input.profile !== undefined) updates.profile = JSON.stringify(input.profile);
   if (input.altitude !== undefined) updates.altitude = input.altitude;
+  if (input.imageUrl !== undefined) updates.imageUrl = input.imageUrl;
   if (input.published !== undefined) updates.published = input.published;
 
   await db
@@ -122,6 +124,7 @@ export function serializeStoreProduct(p: typeof storeProducts.$inferSelect) {
     type: p.type as "verde" | "tostado" | "maquila",
     profile: parseProfileJson(p.profile),
     altitude: p.altitude,
+    imageUrl: p.imageUrl ?? "",
     published: p.published,
     createdAt: p.createdAt,
     updatedAt: p.updatedAt,

@@ -14,6 +14,7 @@ export interface MarketplaceProduct {
   pricePerKg: number;
   description: string;
   altitude: string;
+  imageUrl?: string;
   profile: string[];
   storeId?: string;
   storeName?: string;

@@ -22,6 +22,7 @@ export async function getMarketplaceProducts(): Promise<MarketplaceProduct[]> {
     pricePerKg: product.pricePerKg,
     description: product.description ?? "",
     altitude: product.altitude ?? "",
+    imageUrl: product.imageUrl ?? "",
     profile: parseProfileJson(product.profile),
     storeId: store.id,
     storeName: store.storeName,

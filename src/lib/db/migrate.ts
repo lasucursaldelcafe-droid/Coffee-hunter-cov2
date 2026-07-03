@@ -16,6 +16,19 @@ const COLUMN_MIGRATIONS = [
   "ALTER TABLE coffee_stores ADD COLUMN theme_hero_title TEXT DEFAULT ''",
   "ALTER TABLE coffee_stores ADD COLUMN theme_hero_subtitle TEXT DEFAULT ''",
   "ALTER TABLE coffee_stores ADD COLUMN theme_button_style TEXT DEFAULT 'pill'",
+  "ALTER TABLE coffee_stores ADD COLUMN password_hash TEXT",
+  "ALTER TABLE coffee_stores ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 0",
+  "ALTER TABLE coffee_stores ADD COLUMN email_verification_token TEXT",
+  "ALTER TABLE coffee_stores ADD COLUMN store_model TEXT NOT NULL DEFAULT 'coffee_shop'",
+  "ALTER TABLE coffee_stores ADD COLUMN store_template TEXT NOT NULL DEFAULT 'advanced'",
+  "ALTER TABLE coffee_stores ADD COLUMN logo_url TEXT DEFAULT ''",
+  "ALTER TABLE coffee_stores ADD COLUMN cover_image_url TEXT DEFAULT ''",
+  "ALTER TABLE coffee_stores ADD COLUMN physical_address TEXT DEFAULT ''",
+  "ALTER TABLE coffee_stores ADD COLUMN physical_city TEXT DEFAULT ''",
+  "ALTER TABLE coffee_stores ADD COLUMN physical_country TEXT DEFAULT ''",
+  "ALTER TABLE coffee_stores ADD COLUMN purchase_locations TEXT DEFAULT '[]'",
+  "ALTER TABLE coffee_stores ADD COLUMN social_links TEXT DEFAULT '{}'",
+  "ALTER TABLE store_products ADD COLUMN image_url TEXT DEFAULT ''",
 ];
 
 const TABLE_SQL = `
@@ -63,6 +76,30 @@ const TABLE_SQL = `
     profile TEXT DEFAULT '[]',
     altitude TEXT DEFAULT '',
     published INTEGER NOT NULL DEFAULT 1,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS store_blog_posts (
+    id TEXT PRIMARY KEY,
+    store_id TEXT NOT NULL,
+    slug TEXT NOT NULL,
+    title TEXT NOT NULL,
+    excerpt TEXT DEFAULT '',
+    content TEXT DEFAULT '',
+    cover_image_url TEXT DEFAULT '',
+    published INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS store_pages (
+    id TEXT PRIMARY KEY,
+    store_id TEXT NOT NULL,
+    slug TEXT NOT NULL,
+    nav_label TEXT NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT DEFAULT '',
+    published INTEGER NOT NULL DEFAULT 0,
+    sort_order INTEGER NOT NULL DEFAULT 0,
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL
   );

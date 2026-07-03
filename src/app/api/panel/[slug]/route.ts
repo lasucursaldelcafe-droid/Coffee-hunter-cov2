@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
-import { getStoreForAdmin, sanitizeStorePublic, updateStoreTheme } from "@/lib/stores/admin";
+import { getStoreForAdmin, sanitizeStoreAdmin, updateStoreTheme } from "@/lib/stores/admin";
 import { getStoreTokenFromRequest } from "@/lib/stores/session";
 import { listProductsByStoreId, serializeStoreProduct } from "@/lib/stores/products";
+import { listBlogPosts, serializeBlogPost } from "@/lib/stores/blog";
+import { listStorePages, serializeStorePage } from "@/lib/stores/pages";
 import { storeThemeSchema } from "@/lib/validations/product";
 import { themeFromStore } from "@/lib/stores/theme";
 
@@ -23,12 +25,18 @@ export async function GET(request: Request, context: RouteContext) {
       return NextResponse.json({ error: "No autorizado" }, { status: 403 });
     }
 
-    const products = await listProductsByStoreId(store.id, false);
+    const [products, blogPosts, pages] = await Promise.all([
+      listProductsByStoreId(store.id, false),
+      listBlogPosts(store.id, false),
+      listStorePages(store.id, false),
+    ]);
 
     return NextResponse.json({
-      store: sanitizeStorePublic(store),
+      store: sanitizeStoreAdmin(store),
       theme: themeFromStore(store),
       products: products.map(serializeStoreProduct),
+      blogPosts: blogPosts.map(serializeBlogPost),
+      pages: pages.map(serializeStorePage),
     });
   } catch {
     return NextResponse.json({ error: "Error interno" }, { status: 500 });
