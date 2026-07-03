@@ -35,7 +35,16 @@ http://localhost:3000/api/health → `{"status":"ok",...}`
 ```powershell
 npm run verify:ecosystem
 curl -sI https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/ | findstr HTTP
+curl -s https://colombia-green-coffee.vercel.app/api/health
 ```
+
+## 5. Si falla el workflow "Publicar en Vercel"
+
+| Error | Solución |
+|-------|----------|
+| `VERCEL_PROJECT_ID apunta a 'empresario-virtual'` | Los secrets de GitHub son del repo EV, no de Coffee Hunter. Ejecuta `npm run setup:vercel` y luego `npm run setup:github-secrets` **desde este repo**. |
+| `Vercel CLI version is outdated` | Ya corregido en el workflow (usa `vercel@latest`). Haz `git pull`. |
+| Vercel omitido (notice) | Falta `VERCEL_TOKEN`, `VERCEL_ORG_ID` o `VERCEL_PROJECT_ID` en GitHub Secrets. |
 
 ---
 
