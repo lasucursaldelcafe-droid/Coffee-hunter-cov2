@@ -1,4 +1,5 @@
-import { randomBytes, writeFileSync, existsSync, readFileSync, copyFileSync } from "fs";
+import { writeFileSync, existsSync, readFileSync, copyFileSync } from "fs";
+import { randomBytes } from "crypto";
 import { join } from "path";
 
 const root = process.cwd();
