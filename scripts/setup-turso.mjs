@@ -39,7 +39,7 @@ async function tursoApi(path, options = {}) {
 async function getOrgSlug() {
   if (ORG) return ORG;
   const data = await tursoApi("/organizations");
-  const orgs = data.organizations || [];
+  const orgs = Array.isArray(data) ? data : data.organizations || [];
   if (orgs.length === 0) throw new Error("No Turso organizations found for this token.");
   if (orgs.length === 1) return orgs[0].slug || orgs[0].name;
   console.log("Organizaciones Turso disponibles:");
