@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { SectionHeading } from "@/components/SectionHeading";
-import { RetailReportForm } from "@/components/RetailReportForm";
+import { PanelLoginForm } from "@/components/PanelLoginForm";
 import { CommissionBanner } from "@/components/CommissionBanner";
 import Link from "next/link";
 import { formatCommissionRate } from "@/lib/platform";
 
 export const metadata: Metadata = {
   title: "Panel del vendedor",
-  description: "Gestiona tu tienda, reportes retail y ventas en Colombia Green Coffee.",
+  description: "Administra tu tienda, productos y apariencia en Colombia Green Coffee.",
 };
 
 export default function PanelPage() {
@@ -16,17 +16,17 @@ export default function PanelPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <SectionHeading
           eyebrow="Panel vendedor"
-          title="Tu operación en un solo lugar"
-          description={`Comisión ${formatCommissionRate()} por venta · sin suscripción. Reporta ventas retail para alimentar datos de mercado y mejorar tu visibilidad.`}
+          title="Administra tu coffee shop"
+          description={`Comisión ${formatCommissionRate()} por venta · sin suscripción. Personaliza colores, textos y publica productos visibles en tu tienda y en el catálogo principal.`}
         />
 
         <CommissionBanner />
 
         <div className="grid md:grid-cols-3 gap-4">
           {[
-            { title: "Ventas", desc: "Comisión descontada al concretar cada pedido", icon: "💰" },
-            { title: "Retail", desc: "Reporta kg, canal y precio por periodo", icon: "📊" },
-            { title: "Tienda", desc: "Perfil profesional visible para compradores", icon: "🏪" },
+            { title: "Productos", desc: "Publica café verde, tostado o maquila", icon: "☕" },
+            { title: "Apariencia", desc: "Colores, título y estilo de botones", icon: "🎨" },
+            { title: "Marketplace", desc: "Tus productos en el shop principal", icon: "🏪" },
           ].map((card) => (
             <div key={card.title} className="p-5 rounded-2xl border border-cream bg-white">
               <span className="text-2xl mb-2 block" aria-hidden>{card.icon}</span>
@@ -38,12 +38,12 @@ export default function PanelPage() {
 
         <div className="bg-white rounded-2xl border border-cream p-6 sm:p-8 shadow-sm">
           <h2 className="font-display text-xl font-bold text-coffee mb-2">
-            Reporte de ventas retail
+            Entrar a mi tienda
           </h2>
           <p className="text-sm text-foreground/60 mb-6">
-            Datos agregados para mapas de demanda, precios y canales. Información confidencial por tienda.
+            Usa el correo con el que registraste tu coffee shop.
           </p>
-          <RetailReportForm />
+          <PanelLoginForm />
         </div>
 
         <p className="text-center text-sm text-foreground/50">

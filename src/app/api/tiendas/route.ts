@@ -11,8 +11,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: "Tienda registrada exitosamente",
+      message: "Tienda creada exitosamente",
       slug: result.slug,
+      adminToken: result.adminToken,
+      panelUrl: `/panel/${result.slug}`,
       commissionRate: result.commissionRate,
     });
   } catch (error) {

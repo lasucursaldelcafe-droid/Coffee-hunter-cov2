@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import type Database from "better-sqlite3";
 import type { Client } from "@libsql/client";
 
@@ -8,6 +9,13 @@ const COLUMN_MIGRATIONS = [
   "ALTER TABLE coffee_stores ADD COLUMN retail_channel TEXT DEFAULT ''",
   "ALTER TABLE coffee_stores ADD COLUMN monthly_volume_kg INTEGER",
   "ALTER TABLE coffee_stores ADD COLUMN commission_rate REAL NOT NULL DEFAULT 0.08",
+  "ALTER TABLE coffee_stores ADD COLUMN admin_token TEXT",
+  "ALTER TABLE coffee_stores ADD COLUMN theme_primary_color TEXT DEFAULT '#68190e'",
+  "ALTER TABLE coffee_stores ADD COLUMN theme_accent_color TEXT DEFAULT '#2d5a27'",
+  "ALTER TABLE coffee_stores ADD COLUMN theme_background_color TEXT DEFAULT '#f7e9e0'",
+  "ALTER TABLE coffee_stores ADD COLUMN theme_hero_title TEXT DEFAULT ''",
+  "ALTER TABLE coffee_stores ADD COLUMN theme_hero_subtitle TEXT DEFAULT ''",
+  "ALTER TABLE coffee_stores ADD COLUMN theme_button_style TEXT DEFAULT 'pill'",
 ];
 
 const TABLE_SQL = `
@@ -41,7 +49,48 @@ const TABLE_SQL = `
     status TEXT NOT NULL DEFAULT 'pending',
     created_at INTEGER NOT NULL
   );
+  CREATE TABLE IF NOT EXISTS store_products (
+    id TEXT PRIMARY KEY,
+    store_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    origin TEXT NOT NULL DEFAULT 'Colombia',
+    description TEXT DEFAULT '',
+    price_per_kg REAL NOT NULL,
+    score REAL,
+    process TEXT DEFAULT '',
+    variety TEXT DEFAULT '',
+    type TEXT NOT NULL DEFAULT 'verde',
+    profile TEXT DEFAULT '[]',
+    altitude TEXT DEFAULT '',
+    published INTEGER NOT NULL DEFAULT 1,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+  );
 `;
+
+function backfillAdminTokensSqlite(sqlite: Database.Database): void {
+  const rows = sqlite
+    .prepare("SELECT id FROM coffee_stores WHERE admin_token IS NULL OR admin_token = ''")
+    .all() as { id: string }[];
+
+  const update = sqlite.prepare("UPDATE coffee_stores SET admin_token = ? WHERE id = ?");
+  for (const row of rows) {
+    update.run(uuidv4(), row.id);
+  }
+}
+
+async function backfillAdminTokensLibsql(client: Client): Promise<void> {
+  const result = await client.execute(
+    "SELECT id FROM coffee_stores WHERE admin_token IS NULL OR admin_token = ''",
+  );
+  for (const row of result.rows) {
+    const id = row.id as string;
+    await client.execute({
+      sql: "UPDATE coffee_stores SET admin_token = ? WHERE id = ?",
+      args: [uuidv4(), id],
+    });
+  }
+}
 
 export function migrateSqlite(sqlite: Database.Database): void {
   for (const sql of COLUMN_MIGRATIONS) {
@@ -52,6 +101,7 @@ export function migrateSqlite(sqlite: Database.Database): void {
     }
   }
   sqlite.exec(TABLE_SQL);
+  backfillAdminTokensSqlite(sqlite);
 }
 
 export async function migrateLibsql(client: Client): Promise<void> {
@@ -63,4 +113,5 @@ export async function migrateLibsql(client: Client): Promise<void> {
     }
   }
   await client.executeMultiple(TABLE_SQL);
+  await backfillAdminTokensLibsql(client);
 }

@@ -21,9 +21,11 @@ export async function registerCoffeeStore(input: StoreRegistrationInput) {
   const slug = `${baseSlug}-${uuidv4().slice(0, 8)}`;
 
   const id = uuidv4();
+  const adminToken = uuidv4();
   await db.insert(coffeeStores).values({
     id,
     slug,
+    adminToken,
     storeName: input.storeName,
     ownerName: input.ownerName,
     email: input.email.toLowerCase(),
@@ -36,11 +38,11 @@ export async function registerCoffeeStore(input: StoreRegistrationInput) {
     monthlyVolumeKg: input.monthlyVolumeKg ?? null,
     commissionRate: DEFAULT_COMMISSION_RATE,
     description: input.description ?? "",
-    status: "pending",
+    status: "active",
     createdAt: new Date(),
   });
 
-  return { id, slug, commissionRate: DEFAULT_COMMISSION_RATE };
+  return { id, slug, adminToken, commissionRate: DEFAULT_COMMISSION_RATE };
 }
 
 export async function countCoffeeStores(): Promise<number> {

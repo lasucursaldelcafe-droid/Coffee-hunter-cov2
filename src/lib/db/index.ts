@@ -63,6 +63,7 @@ const INIT_SQL = `
   CREATE TABLE IF NOT EXISTS coffee_stores (
     id TEXT PRIMARY KEY,
     slug TEXT NOT NULL UNIQUE,
+    admin_token TEXT NOT NULL UNIQUE,
     store_name TEXT NOT NULL,
     owner_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
@@ -75,8 +76,31 @@ const INIT_SQL = `
     monthly_volume_kg INTEGER,
     commission_rate REAL NOT NULL DEFAULT 0.08,
     description TEXT DEFAULT '',
-    status TEXT NOT NULL DEFAULT 'pending',
+    theme_primary_color TEXT DEFAULT '#68190e',
+    theme_accent_color TEXT DEFAULT '#2d5a27',
+    theme_background_color TEXT DEFAULT '#f7e9e0',
+    theme_hero_title TEXT DEFAULT '',
+    theme_hero_subtitle TEXT DEFAULT '',
+    theme_button_style TEXT DEFAULT 'pill',
+    status TEXT NOT NULL DEFAULT 'active',
     created_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS store_products (
+    id TEXT PRIMARY KEY,
+    store_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    origin TEXT NOT NULL DEFAULT 'Colombia',
+    description TEXT DEFAULT '',
+    price_per_kg REAL NOT NULL,
+    score REAL,
+    process TEXT DEFAULT '',
+    variety TEXT DEFAULT '',
+    type TEXT NOT NULL DEFAULT 'verde',
+    profile TEXT DEFAULT '[]',
+    altitude TEXT DEFAULT '',
+    published INTEGER NOT NULL DEFAULT 1,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
   );
   CREATE TABLE IF NOT EXISTS logistics_quotes (
     id TEXT PRIMARY KEY,
