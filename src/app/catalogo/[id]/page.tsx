@@ -44,6 +44,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14">
           <div>
+            {product.imageUrl && (
+              <img src={product.imageUrl} alt={product.name} className="w-full h-64 object-cover rounded-2xl mb-6" />
+            )}
             <div className="rounded-2xl bg-gradient-to-br from-cream to-white border border-cream p-10 mb-6">
               <TrustBadges />
               <div className="mt-8">

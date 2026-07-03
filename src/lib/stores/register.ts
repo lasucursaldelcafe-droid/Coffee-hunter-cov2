@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { db, initDatabase } from "@/lib/db";
 import { coffeeStores } from "@/lib/db/schema";
 import { DEFAULT_COMMISSION_RATE, slugifyStoreName, type StoreRegistrationInput } from "@/lib/validations/store";
+import { createEmailVerificationToken } from "@/lib/stores/security";
 
 export async function registerCoffeeStore(input: StoreRegistrationInput) {
   await initDatabase();
@@ -22,10 +23,15 @@ export async function registerCoffeeStore(input: StoreRegistrationInput) {
 
   const id = uuidv4();
   const adminToken = uuidv4();
+  const emailVerificationToken = createEmailVerificationToken();
   await db.insert(coffeeStores).values({
     id,
     slug,
     adminToken,
+    emailVerificationToken,
+    emailVerified: false,
+    storeModel: "coffee_shop",
+    storeTemplate: "advanced",
     storeName: input.storeName,
     ownerName: input.ownerName,
     email: input.email.toLowerCase(),

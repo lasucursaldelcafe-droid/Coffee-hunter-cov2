@@ -15,6 +15,7 @@ interface ProductFormData {
   profile: string[];
   altitude: string;
   published: boolean;
+  imageUrl?: string;
 }
 
 interface StoreProductFormProps {
@@ -35,6 +36,7 @@ export function StoreProductForm({ initial, onSave, onCancel }: StoreProductForm
     type: initial?.type ?? "verde",
     profile: initial?.profile ?? [],
     altitude: initial?.altitude ?? "",
+    imageUrl: initial?.imageUrl ?? "",
     published: initial?.published ?? true,
     id: initial?.id,
   });
@@ -134,6 +136,15 @@ export function StoreProductForm({ initial, onSave, onCancel }: StoreProductForm
           <input
             value={form.variety}
             onChange={(e) => setForm((f) => ({ ...f, variety: e.target.value }))}
+            className={inputClass}
+          />
+        </Field>
+        <Field label="Foto del producto (URL)">
+          <input
+            type="url"
+            value={form.imageUrl ?? ""}
+            onChange={(e) => setForm((f) => ({ ...f, imageUrl: e.target.value }))}
+            placeholder="https://ejemplo.com/foto-cafe.jpg"
             className={inputClass}
           />
         </Field>

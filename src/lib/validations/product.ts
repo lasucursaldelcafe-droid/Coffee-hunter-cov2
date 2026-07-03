@@ -13,6 +13,7 @@ export const storeProductSchema = z.object({
   type: productTypeSchema.default("verde"),
   profile: z.array(z.string()).optional().default([]),
   altitude: z.string().max(40).optional().default(""),
+  imageUrl: z.string().url().or(z.literal("")).optional().default(""),
   published: z.boolean().optional().default(true),
 });
 
@@ -33,4 +34,5 @@ export type StoreThemeInput = z.infer<typeof storeThemeSchema>;
 
 export const panelLoginSchema = z.object({
   email: z.string().email(),
+  password: z.string().optional(),
 });
