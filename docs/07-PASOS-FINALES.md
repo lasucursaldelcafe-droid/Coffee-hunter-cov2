@@ -14,6 +14,27 @@ notepad .env.local
 |----------|-------|
 | `VERCEL_TOKEN` | https://vercel.com/account/tokens |
 | `TURSO_PLATFORM_TOKEN` | https://turso.tech/app → Settings → Tokens |
+| `RESEND_API_KEY` | https://resend.com/api-keys → Create API Key |
+| `EMAIL_FROM` | Remitente verificado en Resend, ej. `Colombia Green Coffee <onboarding@tudominio.com>` |
+
+## 1b. Email de bienvenida (Resend)
+
+1. Crea cuenta en [resend.com](https://resend.com) y verifica tu dominio (o usa `onboarding@resend.dev` solo en pruebas).
+2. Añade a `.env.local`:
+
+```env
+RESEND_API_KEY=re_...
+EMAIL_FROM=Colombia Green Coffee <onboarding@tudominio.com>
+MAIN_EMAIL=lasucursaldelcafe@gmail.com
+```
+
+3. Sincroniza a GitHub y Vercel:
+
+```powershell
+npm run setup:tokens
+```
+
+O manualmente: GitHub → Settings → Secrets → `RESEND_API_KEY` y `EMAIL_FROM`, luego Actions → **Sincronizar env Vercel** → Run workflow.
 
 ## 2. Deploy completo
 
