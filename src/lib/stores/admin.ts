@@ -9,6 +9,8 @@ import {
   serializePurchaseLocations,
   serializeSocialLinks,
 } from "@/lib/stores/social";
+import { getTemplateThemeDefaults, resolveTemplateId } from "@/lib/stores/templates";
+import type { StoreTemplateId } from "@/lib/stores/templates";
 import { getSecurityStatus } from "@/lib/stores/security";
 
 export async function getStoreByAdminToken(token: string) {
@@ -46,6 +48,17 @@ export async function findStoreByEmail(email: string) {
 export async function updateStoreTheme(storeId: string, input: StoreThemeInput) {
   await initDatabase();
   const updates: Record<string, unknown> = {};
+
+  if (input.storeTemplate) {
+    const templateId = resolveTemplateId(input.storeTemplate);
+    updates.storeTemplate = templateId;
+    const defaults = getTemplateThemeDefaults(templateId);
+    updates.themePrimaryColor = input.themePrimaryColor ?? defaults.themePrimaryColor;
+    updates.themeAccentColor = input.themeAccentColor ?? defaults.themeAccentColor;
+    updates.themeBackgroundColor = input.themeBackgroundColor ?? defaults.themeBackgroundColor;
+    updates.themeButtonStyle = input.themeButtonStyle ?? defaults.themeButtonStyle;
+  }
+
   if (input.themePrimaryColor) updates.themePrimaryColor = input.themePrimaryColor;
   if (input.themeAccentColor) updates.themeAccentColor = input.themeAccentColor;
   if (input.themeBackgroundColor) updates.themeBackgroundColor = input.themeBackgroundColor;
@@ -56,6 +69,18 @@ export async function updateStoreTheme(storeId: string, input: StoreThemeInput) 
   if (input.storeName) updates.storeName = input.storeName;
   if (Object.keys(updates).length === 0) return;
   await db.update(coffeeStores).set(updates).where(eq(coffeeStores.id, storeId));
+}
+
+export async function applyStoreTemplate(storeId: string, templateId: StoreTemplateId) {
+  await initDatabase();
+  const defaults = getTemplateThemeDefaults(templateId);
+  await db.update(coffeeStores).set({
+    storeTemplate: templateId,
+    themePrimaryColor: defaults.themePrimaryColor,
+    themeAccentColor: defaults.themeAccentColor,
+    themeBackgroundColor: defaults.themeBackgroundColor,
+    themeButtonStyle: defaults.themeButtonStyle,
+  }).where(eq(coffeeStores.id, storeId));
 }
 
 export async function updateStoreProfile(storeId: string, input: StoreProfileInput) {

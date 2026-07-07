@@ -62,9 +62,12 @@ export const SOCIAL_PLATFORMS = [
 
 export const STORE_TEMPLATES = [
   { value: "advanced", label: "Coffee Shop avanzado", available: true },
-  { value: "casa_del_cafe", label: "Casa del Café · Prisma", available: false },
-  { value: "pergamino", label: "Pergamino", available: false },
-  { value: "tropicalia", label: "Tropicalia", available: false },
-  { value: "starbucks", label: "Starbucks-style", available: false },
-  { value: "juan_valdez", label: "Juan Valdez-style", available: false },
+  { value: "casa_del_cafe", label: "Casa del Café · Prisma", available: true },
+  { value: "pergamino", label: "Pergamino", available: true },
+  { value: "tropicalia", label: "Tropicalia", available: true },
+  { value: "starbucks", label: "Starbucks-style", available: true },
+  { value: "juan_valdez", label: "Juan Valdez-style", available: true },
 ] as const;
+
+export type { StoreTemplateId } from "@/lib/stores/templates";
+export { getTemplatePreset, STORE_TEMPLATE_PRESETS } from "@/lib/stores/templates";
