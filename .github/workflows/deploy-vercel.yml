@@ -34,6 +34,9 @@ jobs:
       TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
       ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
       NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+      MAIN_EMAIL: ${{ secrets.MAIN_EMAIL }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
       EXPECTED_PROJECT: colombia-green-coffee
     steps:
       - uses: actions/checkout@v4
@@ -53,6 +56,12 @@ jobs:
         if: steps.creds.outputs.ready == 'true'
         id: project
         run: node scripts/ci-resolve-vercel-project.mjs
+
+      - name: Sincronizar variables en Vercel
+        if: steps.creds.outputs.ready == 'true'
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
+        run: node scripts/ci-sync-vercel-env.mjs
 
       - uses: actions/setup-node@v4
         if: steps.creds.outputs.ready == 'true'

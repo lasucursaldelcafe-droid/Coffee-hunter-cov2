@@ -16,6 +16,9 @@ jobs:
       TURSO_AUTH_TOKEN: ${{ github.event.client_payload.turso_auth_token || secrets.TURSO_AUTH_TOKEN }}
       ENCRYPTION_KEY: ${{ github.event.client_payload.encryption_key || secrets.ENCRYPTION_KEY }}
       NEXT_PUBLIC_APP_URL: https://colombia-green-coffee.vercel.app
+      MAIN_EMAIL: ${{ github.event.client_payload.main_email || secrets.MAIN_EMAIL }}
+      RESEND_API_KEY: ${{ github.event.client_payload.resend_api_key || secrets.RESEND_API_KEY }}
+      EMAIL_FROM: ${{ github.event.client_payload.email_from || secrets.EMAIL_FROM }}
     steps:
       - uses: actions/checkout@v4
 
