@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SectionHeading } from "@/components/SectionHeading";
+import { PageHero } from "@/components/home/PageHero";
 import { logisticsServices } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Logística internacional",
   description:
-    "Operadores logísticos para envío internacional de café verde, tostado y maquila de marca. Más de 15 países con certificados y cumplimiento aduanero.",
+    "Operadores logísticos para envío internacional de café verde, tostado y maquila. Más de 15 países.",
 };
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -36,105 +36,109 @@ const processSteps = [
   {
     step: "01",
     title: "Solicitud y cotización",
-    description: "Indícanos origen, destino, tipo de café y volumen. Te enviamos cotización en 24 horas.",
+    description: "Indícanos origen, destino, tipo de café y volumen. Cotización en 24 horas.",
   },
   {
     step: "02",
     title: "Documentación",
-    description: "Gestionamos certificados fitosanitarios, permisos de importación y documentación aduanera.",
+    description: "Certificados fitosanitarios, permisos de importación y aduanas.",
   },
   {
     step: "03",
     title: "Embarque",
-    description: "Coordinamos con navieras, aerolíneas o transporte terrestre según destino y urgencia.",
+    description: "Navieras, aerolíneas o transporte terrestre según destino.",
   },
   {
     step: "04",
-    title: "Seguimiento y entrega",
-    description: "Tracking en tiempo real hasta la entrega. Operadores locales para última milla.",
+    title: "Entrega",
+    description: "Tracking en tiempo real. Operadores locales para última milla.",
   },
+];
+
+const trustPoints = [
+  "15+ países de cobertura",
+  "Certificados y cumplimiento aduanero",
+  "Red de operadores aliados",
+  "Trazabilidad lote a lote",
 ];
 
 export default function LogisticaPage() {
   return (
     <>
-      <section className="bg-slate text-white py-16 lg:py-24">
+      <PageHero
+        eyebrow="Logística internacional"
+        title="Del origen a la puerta de tu cliente"
+        description="Como Trade entrega café tostado bajo demanda, nosotros movemos café verde, tostado y marcas de maquila con operadores certificados en todo el mundo."
+        primaryCta={{ label: "Crear tienda con logística", href: "/crear-tienda" }}
+        secondaryCta={{ label: "Ver catálogo", href: "/catalogo" }}
+      />
+
+      <section className="py-12 bg-warm border-b border-black/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="Logística internacional"
-            title="Operadores logísticos de café a todo el mundo"
-            description="Enviamos café verde, tostado y productos de maquila a más de 15 países. Certificados, aduanas y cumplimiento regulatorio incluidos."
-            light
-          />
+          <div className="flex flex-wrap justify-center gap-6 text-sm font-semibold text-trade-muted">
+            {trustPoints.map((point) => (
+              <span key={point} className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-green" />
+                {point}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="py-16 lg:py-24">
+      <section className="py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-8">
+          <p className="section-eyebrow text-center">Servicios</p>
+          <h2 className="font-display text-3xl font-bold text-trade-ink text-center mb-12">
+            Operadores para cada tipo de envío
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
             {logisticsServices.map((service) => (
-              <div
-                key={service.id}
-                className="p-8 bg-white rounded-2xl border border-cream hover:shadow-lg transition-shadow"
-              >
-                <div className="w-16 h-16 rounded-xl bg-cream flex items-center justify-center text-coffee mb-6">
+              <article key={service.id} className="trade-card p-8">
+                <div className="w-14 h-14 rounded-xl bg-warm flex items-center justify-center text-coffee mb-6">
                   {iconMap[service.icon]}
                 </div>
-                <h3 className="font-display text-xl font-bold text-coffee mb-3">
-                  {service.title}
-                </h3>
-                <p className="text-foreground/70 mb-4">{service.description}</p>
+                <h3 className="font-display text-xl font-bold text-coffee mb-3">{service.title}</h3>
+                <p className="text-trade-muted mb-4 leading-relaxed">{service.description}</p>
                 <div className="flex flex-wrap gap-2">
                   {service.regions.map((region) => (
-                    <span
-                      key={region}
-                      className="px-3 py-1 bg-green/10 text-green text-xs font-semibold rounded-full"
-                    >
+                    <span key={region} className="px-3 py-1 bg-green/10 text-green text-xs font-semibold rounded-full">
                       {region}
                     </span>
                   ))}
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-16 lg:py-24 bg-cream/50">
+      <section className="py-16 lg:py-24 bg-warm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="Proceso"
-            title="¿Cómo funciona?"
-            description="De la bodega en Colombia a la puerta de tu cliente, en 4 pasos."
-          />
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <p className="section-eyebrow text-center">Proceso</p>
+          <h2 className="font-display text-3xl font-bold text-trade-ink text-center mb-14">
+            Cuatro pasos, de Colombia al mundo
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {processSteps.map((item) => (
-              <div key={item.step} className="text-center p-6">
-                <div className="text-4xl font-display font-bold text-green/30 mb-4">
-                  {item.step}
-                </div>
-                <h3 className="font-display text-lg font-bold text-coffee mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-foreground/70">{item.description}</p>
+              <div key={item.step}>
+                <span className="text-4xl font-display font-bold text-coffee/15 block mb-3">{item.step}</span>
+                <h3 className="font-display font-bold text-coffee mb-2">{item.title}</h3>
+                <p className="text-sm text-trade-muted leading-relaxed">{item.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-16 bg-green text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-display text-3xl font-bold mb-4">
-            ¿Necesitas enviar café internacionalmente?
-          </h2>
-          <p className="text-white/80 mb-4">
-            Contáctanos para una cotización personalizada. Verificamos los requisitos
-            de importación de tu país antes de cada envío.
+      <section className="py-16 lg:py-20 bg-trade-ink text-white text-center">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-display text-3xl font-bold mb-4">¿Necesitas enviar café internacionalmente?</h2>
+          <p className="text-white/75 mb-4">
+            Las tiendas de la plataforma acceden a logística integrada. También cotizamos envíos puntuales.
           </p>
-          <p className="text-white/60 text-sm mb-8">
-            ¿Gestión de envíos empresariales? Usa la app{" "}
+          <p className="text-white/50 text-sm mb-8">
+            Gestión empresarial avanzada:{" "}
             <a
               href="https://github.com/lasucursaldelcafe-droid/Programa-de-logistca"
               className="underline hover:text-white"
@@ -142,14 +146,10 @@ export default function LogisticaPage() {
               rel="noopener noreferrer"
             >
               Programa Operativo
-            </a>{" "}
-            (repositorio separado).
+            </a>
           </p>
-          <Link
-            href="/crear-tienda"
-            className="inline-block px-8 py-4 bg-white text-green font-semibold rounded-full hover:bg-cream transition-colors"
-          >
-            Solicitar cotización
+          <Link href="/crear-tienda" className="btn-trade btn-trade-primary btn-trade-pill bg-white text-trade-ink hover:bg-cream">
+            Solicitar acceso
           </Link>
         </div>
       </section>
