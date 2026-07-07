@@ -2,28 +2,28 @@ import Link from "next/link";
 
 const paths = [
   {
+    badge: "5 preguntas",
+    title: "Encuentra tu café",
+    description:
+      "Quiz B2B que recomienda productos según tu perfil, volumen y presupuesto — inspirado en Trade Coffee.",
+    cta: "Hacer el quiz",
+    href: "/encuentra-tu-cafe",
+  },
+  {
+    badge: "Curado",
+    title: "Colecciones editoriales",
+    description:
+      "Huila Gesha, variedades exóticas, verde para tostadores y más — selecciones temáticas del catálogo.",
+    cta: "Ver colecciones",
+    href: "/catalogo/coleccion",
+  },
+  {
     badge: "8% comisión",
     title: "Monta tu coffee shop",
     description:
       "Regístrate gratis y vende café verde, tostado o tu marca propia con tienda personalizada.",
     cta: "Crear tienda",
     href: "/crear-tienda",
-  },
-  {
-    badge: "SCA 85+",
-    title: "Explora el catálogo",
-    description:
-      "Desde lavados brillantes hasta naturales audaces — microlotes curados de especialidad colombiana.",
-    cta: "Ver catálogo",
-    href: "/catalogo",
-  },
-  {
-    badge: "15+ países",
-    title: "Logística internacional",
-    description:
-      "Operadores aliados para exportación, tostado y última milla. Del origen a la puerta de tu cliente.",
-    cta: "Conocer logística",
-    href: "/logistica",
   },
 ];
 
@@ -37,7 +37,7 @@ export function ShopPaths() {
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {paths.map((path) => (
             <article key={path.title} className="trade-card p-8 flex flex-col">
               <span className="inline-block self-start px-3 py-1 bg-green/10 text-green text-xs font-bold uppercase tracking-wide rounded-full mb-6">

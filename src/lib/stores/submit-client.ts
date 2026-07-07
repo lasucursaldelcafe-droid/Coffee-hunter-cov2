@@ -17,6 +17,7 @@ export interface StoreRegistrationResult {
   slug: string;
   adminToken: string;
   panelUrl: string;
+  storeUrl: string;
 }
 
 const STORAGE_KEY = "cgc_pending_stores";
@@ -37,11 +38,13 @@ export async function submitStoreRegistration(
         slug: string;
         adminToken: string;
         panelUrl: string;
+        storeUrl: string;
       };
       return {
         slug: data.slug,
         adminToken: data.adminToken,
         panelUrl: data.panelUrl ?? `/panel/${data.slug}`,
+        storeUrl: data.storeUrl ?? `/tiendas/${data.slug}`,
       };
     }
     if (res.status === 409) {

@@ -37,8 +37,8 @@ export function CatalogoContent() {
         eyebrow="Catálogo curado"
         title="Café de especialidad colombiano"
         description="Microlotes de la plataforma y de coffee shops verificadas. Cada café con trazabilidad y puntaje SCA."
-        primaryCta={{ label: "Crear mi coffee shop", href: "/crear-tienda" }}
-        secondaryCta={{ label: "Ver coffee shops", href: "/tiendas" }}
+        primaryCta={{ label: "Encuentra tu café", href: "/encuentra-tu-cafe" }}
+        secondaryCta={{ label: "Colecciones curadas", href: "/catalogo/coleccion" }}
         compact
       />
 

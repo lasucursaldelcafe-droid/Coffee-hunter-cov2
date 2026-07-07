@@ -2,10 +2,16 @@ import Link from "next/link";
 
 const highlights = [
   {
-    title: "Café verde de altura",
-    description: "Microlotes con trazabilidad desde la finca. Perfiles únicos de Huila, Cauca y Nariño.",
-    href: "/catalogo?tipo=verde",
-    label: "Ver verde",
+    title: "Encuentra tu café",
+    description: "Quiz de 5 preguntas para recomendarte productos según tu perfil B2B y presupuesto.",
+    href: "/encuentra-tu-cafe",
+    label: "Hacer el quiz",
+  },
+  {
+    title: "Colecciones curadas",
+    description: "Huila Gesha, exóticas, verde para tostadores y microlotes premium — selección editorial.",
+    href: "/catalogo/coleccion",
+    label: "Explorar colecciones",
   },
   {
     title: "Monta tu coffee shop",
@@ -28,7 +34,7 @@ export function ReadySection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {highlights.map((item) => (
             <Link
               key={item.title}

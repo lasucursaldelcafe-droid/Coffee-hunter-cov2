@@ -5,6 +5,8 @@ import { useState } from "react";
 import { PromoBar } from "@/components/home/PromoBar";
 
 const shopLinks = [
+  { href: "/encuentra-tu-cafe", label: "Encuentra tu café", desc: "Quiz B2B de 5 preguntas" },
+  { href: "/catalogo/coleccion", label: "Colecciones", desc: "Selecciones curadas por expertos" },
   { href: "/catalogo", label: "Catálogo", desc: "Microlotes y variedades de especialidad" },
   { href: "/catalogo?tipo=verde", label: "Café verde", desc: "Para tostadores y exportadores" },
   { href: "/catalogo?tipo=tostado", label: "Café tostado", desc: "Perfiles listos para retail" },
