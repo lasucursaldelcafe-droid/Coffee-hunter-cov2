@@ -1,50 +1,86 @@
 "use client";
 
 import { useState } from "react";
-import { storePlans } from "@/lib/data";
+import { businessTypes, retailChannels } from "@/lib/platform";
+import { formatCommissionRate } from "@/lib/platform";
+import { submitStoreRegistration } from "@/lib/stores/submit-client";
+import { saveStoreAdminSession } from "@/lib/stores/session";
 
 interface StoreRegistrationFormProps {
   mode?: "full" | "compact";
 }
 
+const STEPS = ["Tu tienda", "Perfil comercial", "Confirmar"];
+
 export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormProps) {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [panelUrl, setPanelUrl] = useState("/panel");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({
     storeName: "",
     ownerName: "",
     email: "",
+    phone: "",
     country: "",
+    city: "",
+    businessType: "tostador",
     specialty: "",
-    plan: "Starter",
+    retailChannel: "",
+    monthlyVolumeKg: "",
     description: "",
+    acceptCommission: false,
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      setForm((prev) => ({ ...prev, [name]: checked }));
+      return;
+    }
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
+
+  const canContinueStep0 =
+    form.storeName && form.ownerName && form.email && form.country;
+  const canContinueStep1 =
+    form.businessType && form.specialty && form.retailChannel;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.acceptCommission) {
+      setError("Debes aceptar el modelo de comisión por venta");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
     try {
-      const res = await fetch("/api/tiendas", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+      const result = await submitStoreRegistration({
+        storeName: form.storeName,
+        ownerName: form.ownerName,
+        email: form.email,
+        phone: form.phone,
+        country: form.country,
+        city: form.city,
+        specialty: form.specialty,
+        businessType: form.businessType,
+        retailChannel: form.retailChannel,
+        monthlyVolumeKg: form.monthlyVolumeKg
+          ? Number(form.monthlyVolumeKg)
+          : undefined,
+        description: form.description,
+        acceptCommission: true,
       });
-
-      if (!res.ok) {
-        const data = (await res.json()) as { error?: string };
-        throw new Error(data.error ?? "Error al registrar la tienda");
+      if (result) {
+        saveStoreAdminSession(result.slug, result.adminToken);
+        setPanelUrl(result.panelUrl);
       }
-
       setSubmitted(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado");
@@ -62,95 +98,78 @@ export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormPr
           </svg>
         </div>
         <h3 className="font-display text-2xl font-bold text-coffee mb-3">
-          ¡Tu tienda está en camino!
+          ¡Tu tienda está lista!
         </h3>
-        <p className="text-foreground/70 max-w-md mx-auto">
-          Hemos recibido tu solicitud para <strong>{form.storeName}</strong>.
-          Te enviaremos un correo a <strong>{form.email}</strong> con los pasos para activar tu coffee shop.
+        <p className="text-foreground/70 max-w-md mx-auto mb-6">
+          <strong>{form.storeName}</strong> ya está activa. Administra productos, colores y textos
+          desde tu panel. Tus productos aparecerán también en el catálogo principal.
         </p>
+        <a
+          href={panelUrl}
+          className="inline-block px-6 py-3 bg-coffee text-white font-semibold rounded-full hover:bg-coffee-dark transition-colors"
+        >
+          Ir a mi panel de administración
+        </a>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-8">
       {mode === "full" && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          {storePlans.map((plan) => (
-            <label
-              key={plan.name}
-              className={`relative p-5 rounded-xl border-2 cursor-pointer transition-all ${
-                form.plan === plan.name
-                  ? "border-green bg-green/5"
-                  : "border-cream hover:border-green/30"
-              } ${plan.highlighted ? "ring-2 ring-green/20" : ""}`}
-            >
-              <input
-                type="radio"
-                name="plan"
-                value={plan.name}
-                checked={form.plan === plan.name}
-                onChange={handleChange}
-                className="sr-only"
-              />
-              {plan.highlighted && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-green text-white text-xs font-semibold rounded-full">
-                  Popular
-                </span>
-              )}
-              <div className="text-center">
-                <h4 className="font-display font-bold text-coffee">{plan.name}</h4>
-                <p className="text-2xl font-bold text-coffee mt-1">
-                  {plan.price === 0 ? "Gratis" : `$${plan.price}`}
-                  {plan.price > 0 && <span className="text-sm font-normal text-foreground/50">/mes</span>}
-                </p>
-                <p className="text-xs text-foreground/60 mt-2">{plan.description}</p>
+        <div className="flex items-center justify-between gap-2">
+          {STEPS.map((label, i) => (
+            <div key={label} className="flex-1 flex flex-col items-center gap-2">
+              <div
+                className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
+                  i <= step
+                    ? "bg-green text-white"
+                    : "bg-cream text-foreground/40"
+                }`}
+              >
+                {i + 1}
               </div>
-            </label>
+              <span
+                className={`text-xs text-center hidden sm:block ${
+                  i === step ? "text-coffee font-semibold" : "text-foreground/50"
+                }`}
+              >
+                {label}
+              </span>
+            </div>
           ))}
         </div>
       )}
 
-      {step === 1 ? (
-        <div className="space-y-4">
+      {step === 0 && (
+        <div className="space-y-4 animate-fade-up">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="storeName" className="block text-sm font-medium text-coffee mb-1.5">
-                Nombre de tu coffee shop *
-              </label>
+            <Field label="Nombre de tu tienda *" id="storeName">
               <input
                 id="storeName"
                 name="storeName"
-                type="text"
                 required
                 value={form.storeName}
                 onChange={handleChange}
                 placeholder="Ej: Café del Origén"
-                className="w-full px-4 py-3 rounded-xl border border-cream bg-white focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green"
+                className={inputClass}
               />
-            </div>
-            <div>
-              <label htmlFor="ownerName" className="block text-sm font-medium text-coffee mb-1.5">
-                Tu nombre *
-              </label>
+            </Field>
+            <Field label="Tu nombre *" id="ownerName">
               <input
                 id="ownerName"
                 name="ownerName"
-                type="text"
                 required
                 value={form.ownerName}
                 onChange={handleChange}
                 placeholder="Nombre completo"
-                className="w-full px-4 py-3 rounded-xl border border-cream bg-white focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green"
+                className={inputClass}
               />
-            </div>
+            </Field>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-coffee mb-1.5">
-                Correo electrónico *
-              </label>
+            <Field label="Correo electrónico *" id="email">
               <input
                 id="email"
                 name="email"
@@ -159,48 +178,102 @@ export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormPr
                 value={form.email}
                 onChange={handleChange}
                 placeholder="tu@email.com"
-                className="w-full px-4 py-3 rounded-xl border border-cream bg-white focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green"
+                className={inputClass}
               />
-            </div>
-            <div>
-              <label htmlFor="country" className="block text-sm font-medium text-coffee mb-1.5">
-                País *
-              </label>
+            </Field>
+            <Field label="Teléfono / WhatsApp" id="phone">
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={form.phone}
+                onChange={handleChange}
+                placeholder="+57 300 123 4567"
+                className={inputClass}
+              />
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Field label="País *" id="country">
               <input
                 id="country"
                 name="country"
-                type="text"
                 required
                 value={form.country}
                 onChange={handleChange}
-                placeholder="Ej: Colombia, Alemania..."
-                className="w-full px-4 py-3 rounded-xl border border-cream bg-white focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green"
+                placeholder="Colombia, Alemania..."
+                className={inputClass}
               />
-            </div>
+            </Field>
+            <Field label="Ciudad" id="city">
+              <input
+                id="city"
+                name="city"
+                value={form.city}
+                onChange={handleChange}
+                placeholder="Bogotá, Medellín..."
+                className={inputClass}
+              />
+            </Field>
           </div>
 
           <button
             type="button"
-            onClick={() => setStep(2)}
-            disabled={!form.storeName || !form.ownerName || !form.email || !form.country}
-            className="w-full sm:w-auto px-8 py-3 bg-coffee text-white font-semibold rounded-full hover:bg-coffee-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => setStep(1)}
+            disabled={!canContinueStep0}
+            className={btnPrimary}
           >
             Continuar
           </button>
         </div>
-      ) : (
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="specialty" className="block text-sm font-medium text-coffee mb-1.5">
-              Especialidad de tu tienda *
-            </label>
+      )}
+
+      {step === 1 && (
+        <div className="space-y-4 animate-fade-up">
+          <Field label="Tipo de negocio *" id="businessType">
+            <select
+              id="businessType"
+              name="businessType"
+              required
+              value={form.businessType}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              {businessTypes.map((t) => (
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field label="Canal principal de venta *" id="retailChannel">
+            <select
+              id="retailChannel"
+              name="retailChannel"
+              required
+              value={form.retailChannel}
+              onChange={handleChange}
+              className={inputClass}
+            >
+              <option value="">Selecciona tu canal</option>
+              {retailChannels.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field label="Especialidad de tu tienda *" id="specialty">
             <select
               id="specialty"
               name="specialty"
               required
               value={form.specialty}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-cream bg-white focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green"
+              className={inputClass}
             >
               <option value="">Selecciona una opción</option>
               <option value="Café verde para tostadores">Café verde para tostadores</option>
@@ -210,41 +283,89 @@ export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormPr
               <option value="Marca propia / Maquila">Marca propia / Maquila</option>
               <option value="Distribución internacional">Distribución internacional</option>
             </select>
-          </div>
+          </Field>
 
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium text-coffee mb-1.5">
-              Cuéntanos sobre tu proyecto
-            </label>
+          <Field label="Volumen mensual estimado (kg)" id="monthlyVolumeKg">
+            <input
+              id="monthlyVolumeKg"
+              name="monthlyVolumeKg"
+              type="number"
+              min={0}
+              value={form.monthlyVolumeKg}
+              onChange={handleChange}
+              placeholder="Ej: 500"
+              className={inputClass}
+            />
+          </Field>
+
+          <Field label="Cuéntanos sobre tu proyecto" id="description">
             <textarea
               id="description"
               name="description"
               rows={4}
               value={form.description}
               onChange={handleChange}
-              placeholder="¿Qué tipo de café ofrecerás? ¿A qué mercado te diriges?"
-              className="w-full px-4 py-3 rounded-xl border border-cream bg-white focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green resize-none"
+              placeholder="¿Qué vendes, a quién y en qué mercados?"
+              className={`${inputClass} resize-none`}
+            />
+          </Field>
+
+          <div className="flex gap-3">
+            <button type="button" onClick={() => setStep(0)} className={btnSecondary}>
+              Atrás
+            </button>
+            <button
+              type="button"
+              onClick={() => setStep(2)}
+              disabled={!canContinueStep1}
+              className={btnPrimary}
+            >
+              Continuar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === 2 && (
+        <div className="space-y-6 animate-fade-up">
+          <div className="rounded-xl bg-cream/60 p-5 space-y-3 text-sm">
+            <SummaryRow label="Tienda" value={form.storeName} />
+            <SummaryRow label="Contacto" value={`${form.ownerName} · ${form.email}`} />
+            <SummaryRow label="Ubicación" value={`${form.city ? `${form.city}, ` : ""}${form.country}`} />
+            <SummaryRow
+              label="Modelo"
+              value={`Comisión ${formatCommissionRate()} por venta · $0/mes`}
             />
           </div>
+
+          <label className="flex items-start gap-3 cursor-pointer p-4 rounded-xl border border-cream hover:border-green/30 transition-colors">
+            <input
+              type="checkbox"
+              name="acceptCommission"
+              checked={form.acceptCommission}
+              onChange={handleChange}
+              className="mt-1 w-4 h-4 accent-green"
+            />
+            <span className="text-sm text-foreground/80">
+              Acepto el modelo de comisión fija del {formatCommissionRate()} sobre cada venta
+              concretada. Entiendo que no hay cuota mensual ni costo por crear la tienda.
+            </span>
+          </label>
 
           {error && (
             <p className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-xl">{error}</p>
           )}
 
           <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={() => setStep(1)}
-              className="px-6 py-3 border border-cream text-coffee font-semibold rounded-full hover:bg-cream transition-colors"
-            >
+            <button type="button" onClick={() => setStep(1)} className={btnSecondary}>
               Atrás
             </button>
             <button
               type="submit"
-              disabled={loading || !form.specialty}
-              className="flex-1 sm:flex-none px-8 py-3 bg-green text-white font-semibold rounded-full hover:bg-green-light transition-colors disabled:opacity-50"
+              disabled={loading || !form.acceptCommission}
+              className={`flex-1 sm:flex-none ${btnPrimary} bg-green hover:bg-green-light`}
             >
-              {loading ? "Registrando..." : "Crear mi coffee shop"}
+              {loading ? "Registrando..." : "Crear mi tienda gratis"}
             </button>
           </div>
         </div>
@@ -252,3 +373,40 @@ export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormPr
     </form>
   );
 }
+
+function Field({
+  label,
+  id,
+  children,
+}: {
+  label: string;
+  id: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label htmlFor={id} className="block text-sm font-medium text-coffee mb-1.5">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+function SummaryRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between gap-4">
+      <span className="text-foreground/50">{label}</span>
+      <span className="font-medium text-coffee text-right">{value}</span>
+    </div>
+  );
+}
+
+const inputClass =
+  "w-full px-4 py-3 rounded-xl border border-cream bg-white focus:outline-none focus:ring-2 focus:ring-green/30 focus:border-green transition-shadow";
+
+const btnPrimary =
+  "px-8 py-3 bg-coffee text-white font-semibold rounded-full hover:bg-coffee-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+
+const btnSecondary =
+  "px-6 py-3 border border-cream text-coffee font-semibold rounded-full hover:bg-cream transition-colors";

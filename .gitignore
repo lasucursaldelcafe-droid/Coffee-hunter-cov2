@@ -16,6 +16,7 @@
 # next.js
 /.next/
 /out/
+/out/
 
 # production
 /build
@@ -38,6 +39,8 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+cursor-secrets.local.txt
+cursor-secrets-ecosystem.local.txt
 
 # vercel
 .vercel

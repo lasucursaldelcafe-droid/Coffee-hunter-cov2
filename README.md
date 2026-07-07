@@ -7,10 +7,11 @@ Plataforma web integral de café colombiano de especialidad, inspirada en [Colom
 | Recurso | URL |
 |---------|-----|
 | **Repositorio** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2 |
-| **Pull Request** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/pull/1 |
-| **Rama de desarrollo** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/tree/cursor/colombia-green-coffee-987d |
-| **Código fuente** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/tree/cursor/colombia-green-coffee-987d/src |
-| **Issues** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/issues |
+| **Código (main)** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/tree/main |
+| **Publicar en web (automático)** | https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/ |
+| **GitHub Actions** | https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/actions |
+| **Deploy Vercel (opcional)** | [![Deploy con Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Flasucursaldelcafe-droid%2FCoffee-hunter-cov2&project-name=colombia-green-coffee) |
+| **Checklist deploy** | [CHECKLIST.md](CHECKLIST.md) |
 
 ### Ecosistema La Sucursal del Café
 
@@ -45,6 +46,22 @@ npm run db:init    # Crea tablas
 npm run dev
 ```
 
+### Automatización completa (Turso + Vercel + GitHub + Cursor)
+
+Con credenciales en `.env.local`:
+
+```bash
+npm run setup:all
+```
+
+Windows PowerShell:
+
+```powershell
+.\scripts\setup-all.ps1
+```
+
+Guía: [`docs/06-AUTO-SETUP.md`](docs/06-AUTO-SETUP.md)
+
 Abre http://localhost:3000
 
 ## Documentación
@@ -52,6 +69,7 @@ Abre http://localhost:3000
 - [`docs/01-VISION.md`](docs/01-VISION.md) — Visión del producto
 - [`docs/02-ARCHITECTURE.md`](docs/02-ARCHITECTURE.md) — Arquitectura técnica
 - [`docs/03-DEPLOY.md`](docs/03-DEPLOY.md) — Deploy en Vercel + Turso
+- [`docs/06-AUTO-SETUP.md`](docs/06-AUTO-SETUP.md) — **setup:all** automatizado
 - [`AGENTS.md`](AGENTS.md) — Guía para agentes IA
 
 ## Estructura
@@ -68,9 +86,20 @@ src/
 
 ## Despliegue
 
-Ver [`docs/03-DEPLOY.md`](docs/03-DEPLOY.md). Resumen:
+Ver [`docs/03-DEPLOY.md`](docs/03-DEPLOY.md) y [`docs/04-GITHUB-AUTOMATION.md`](docs/04-GITHUB-AUTOMATION.md).
 
 ```bash
-npm run build
-# Vercel: conectar repo y configurar TURSO_* en variables de entorno
+npm run ci:validate   # Validación completa (igual que GitHub Actions)
+npm run deploy:auto   # Deploy a Vercel (requiere VERCEL_TOKEN)
 ```
+
+### Automatización GitHub Actions
+
+| Workflow | Cuándo | Qué hace |
+|----------|--------|----------|
+| `ci.yml` | Cada push/PR | typecheck, lint, build |
+| `deploy-vercel.yml` | Push a `main` | Publica en Vercel |
+| `deploy-preview.yml` | PRs | URL preview en el PR |
+| `auto-merge-cursor-prs.yml` | PR `cursor/*` | Merge automático |
+
+**Actions:** https://github.com/lasucursaldelcafe-droid/Coffee-hunter-cov2/actions

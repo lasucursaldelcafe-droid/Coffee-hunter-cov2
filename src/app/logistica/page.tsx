@@ -129,9 +129,21 @@ export default function LogisticaPage() {
           <h2 className="font-display text-3xl font-bold mb-4">
             ¿Necesitas enviar café internacionalmente?
           </h2>
-          <p className="text-white/80 mb-8">
+          <p className="text-white/80 mb-4">
             Contáctanos para una cotización personalizada. Verificamos los requisitos
             de importación de tu país antes de cada envío.
+          </p>
+          <p className="text-white/60 text-sm mb-8">
+            ¿Gestión de envíos empresariales? Usa la app{" "}
+            <a
+              href="https://github.com/lasucursaldelcafe-droid/Programa-de-logistca"
+              className="underline hover:text-white"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Programa Operativo
+            </a>{" "}
+            (repositorio separado).
           </p>
           <Link
             href="/crear-tienda"

@@ -12,7 +12,16 @@
     "db:init": "tsx scripts/init-db.ts",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
-    "health-check": "node scripts/health-check.mjs"
+    "health-check": "node scripts/health-check.mjs",
+    "ci:validate": "node scripts/ci-validate.mjs",
+    "build:pages": "node scripts/build-github-pages.mjs",
+    "deploy:auto": "node scripts/deploy-auto.mjs",
+    "setup:turso": "node scripts/setup-turso.mjs",
+    "setup:vercel": "node scripts/setup-vercel.mjs",
+    "setup:github-secrets": "node scripts/setup-github-secrets.mjs",
+    "setup:tokens": "node scripts/setup-tokens.mjs",
+    "setup:all": "node scripts/setup-all.mjs",
+    "verify:ecosystem": "node scripts/ecosystem/verify-ecosystem.mjs"
   },
   "dependencies": {
     "@libsql/client": "^0.17.4",

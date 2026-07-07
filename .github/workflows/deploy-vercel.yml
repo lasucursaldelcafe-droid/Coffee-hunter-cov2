@@ -1,0 +1,83 @@
+name: Publicar en Vercel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: vercel-production
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Validar build
+        run: npm run ci:validate
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+      TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+      NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+      EXPECTED_PROJECT: colombia-green-coffee
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Comprobar credenciales Vercel
+        id: creds
+        run: |
+          if [ -n "$VERCEL_TOKEN" ] && [ -n "$VERCEL_ORG_ID" ] && [ -n "$VERCEL_PROJECT_ID" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Vercel omitido — configura VERCEL_TOKEN, VERCEL_ORG_ID y VERCEL_PROJECT_ID."
+            echo "Guía: docs/07-PASOS-FINALES.md"
+          fi
+
+      - name: Resolver proyecto Vercel correcto
+        if: steps.creds.outputs.ready == 'true'
+        id: project
+        run: node scripts/ci-resolve-vercel-project.mjs
+
+      - uses: actions/setup-node@v4
+        if: steps.creds.outputs.ready == 'true'
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Instalar dependencias
+        if: steps.creds.outputs.ready == 'true'
+        run: npm ci
+
+      - name: Pull configuración Vercel
+        if: steps.creds.outputs.ready == 'true'
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
+        run: npx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Build artefactos
+        if: steps.creds.outputs.ready == 'true'
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
+        run: npx vercel@latest build --prod --token="$VERCEL_TOKEN"
+
+      - name: Desplegar en Vercel (producción)
+        if: steps.creds.outputs.ready == 'true'
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
+        run: npx vercel@latest deploy --prebuilt --prod --token="$VERCEL_TOKEN"

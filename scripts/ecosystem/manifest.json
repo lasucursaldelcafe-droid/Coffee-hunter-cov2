@@ -1,0 +1,62 @@
+{
+  "version": "2.0.0",
+  "organization": "lasucursaldelcafe-droid",
+  "note": "Índice informativo. Cada plataforma tiene setup independiente en su propio repo.",
+  "platforms": [
+    {
+      "id": "colombia-green-coffee",
+      "name": "Colombia Green Coffee (Coffee Hunter)",
+      "repo": "lasucursaldelcafe-droid/Coffee-hunter-cov2",
+      "localDir": "Coffee-hunter-cov2",
+      "setupCommand": "npm run setup:all",
+      "urls": {
+        "githubPages": "https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/",
+        "vercel": "https://colombia-green-coffee.vercel.app"
+      },
+      "status": "pages-live"
+    },
+    {
+      "id": "programa-operativo",
+      "name": "Programa Operativo — Logística",
+      "repo": "lasucursaldelcafe-droid/Programa-de-logistca",
+      "localDir": "Programa-de-logistca",
+      "setupCommand": "npm run setup:all",
+      "urls": {
+        "githubPages": "https://lasucursaldelcafe-droid.github.io/Programa-de-logistca/",
+        "vercel": "https://programa-de-logistica.vercel.app"
+      },
+      "status": "pending-pages-enable",
+      "independent": true
+    },
+    {
+      "id": "empresario-virtual",
+      "name": "Empresario Virtual",
+      "repo": "lasucursaldelcafe-droid/empresario-virtual",
+      "localDir": "empresario-virtual",
+      "setupCommand": "npm run deploy:auto",
+      "urls": {
+        "production": "https://empresario-virtual.vercel.app",
+        "health": "https://empresario-virtual.vercel.app/api/health"
+      },
+      "status": "live",
+      "independent": true
+    },
+    {
+      "id": "mas-cafe",
+      "name": "Más Café",
+      "repo": "lasucursaldelcafe-droid/WEb-mas-cafe",
+      "localDir": "WEb-mas-cafe",
+      "urls": { "production": "https://w-eb-mas-cafe.vercel.app" },
+      "status": "live",
+      "independent": true
+    },
+    {
+      "id": "feria-cafe",
+      "name": "Feria Café Inscripciones",
+      "repo": "lasucursaldelcafe-droid/feria-cafe-inscripcion",
+      "localDir": "feria-cafe-inscripcion",
+      "status": "live-firebase",
+      "independent": true
+    }
+  ]
+}

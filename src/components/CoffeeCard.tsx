@@ -65,7 +65,7 @@ export function CoffeeCard({ product }: CoffeeCardProps) {
             <span className="text-sm text-foreground/50"> /kg</span>
           </div>
           <Link
-            href={`/catalogo#${product.id}`}
+            href={`/catalogo/${product.id}`}
             className="px-4 py-2 bg-coffee text-white text-sm font-semibold rounded-full hover:bg-coffee-dark transition-colors"
           >
             Ver detalle

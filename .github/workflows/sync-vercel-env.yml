@@ -1,0 +1,38 @@
+name: Sincronizar env Vercel
+
+on:
+  repository_dispatch:
+    types: [sync-vercel-env]
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ github.event.client_payload.vercel_project_id || secrets.VERCEL_PROJECT_ID }}
+      TURSO_DATABASE_URL: ${{ github.event.client_payload.turso_database_url || secrets.TURSO_DATABASE_URL }}
+      TURSO_AUTH_TOKEN: ${{ github.event.client_payload.turso_auth_token || secrets.TURSO_AUTH_TOKEN }}
+      ENCRYPTION_KEY: ${{ github.event.client_payload.encryption_key || secrets.ENCRYPTION_KEY }}
+      NEXT_PUBLIC_APP_URL: https://colombia-green-coffee.vercel.app
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolver proyecto Vercel
+        id: project
+        run: node scripts/ci-resolve-vercel-project.mjs
+
+      - name: Sincronizar variables en Vercel
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
+        run: node scripts/ci-sync-vercel-env.mjs
+
+      - name: Redeploy producción
+        env:
+          VERCEL_PROJECT_ID: ${{ steps.project.outputs.project_id }}
+        run: |
+          npm ci
+          npx vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
+          npx vercel@latest build --prod --token="$VERCEL_TOKEN"
+          npx vercel@latest deploy --prebuilt --prod --token="$VERCEL_TOKEN"

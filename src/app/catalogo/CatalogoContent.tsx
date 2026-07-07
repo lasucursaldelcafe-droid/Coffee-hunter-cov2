@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { CoffeeCard } from "@/components/CoffeeCard";
 import { PageHero } from "@/components/home/PageHero";
-import { products } from "@/lib/data";
+import { MarketplaceProductCard } from "@/components/MarketplaceProductCard";
+import type { MarketplaceProduct } from "@/lib/marketplace/types";
 
 const filters = [
   { value: "all", label: "Todos" },
@@ -15,6 +16,15 @@ const filters = [
 export function CatalogoContent() {
   const searchParams = useSearchParams();
   const activeFilter = searchParams.get("tipo") ?? "all";
+  const [products, setProducts] = useState<MarketplaceProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/productos")
+      .then((res) => res.json() as Promise<{ products: MarketplaceProduct[] }>)
+      .then((data) => setProducts(data.products ?? []))
+      .finally(() => setLoading(false));
+  }, []);
 
   const filtered =
     activeFilter === "all"
@@ -26,7 +36,7 @@ export function CatalogoContent() {
       <PageHero
         eyebrow="Catálogo curado"
         title="Café de especialidad colombiano"
-        description="Microlotes, variedades exóticas y maquila. Cada café con trazabilidad completa y puntaje SCA certificado."
+        description="Microlotes de la plataforma y de coffee shops verificadas. Cada café con trazabilidad y puntaje SCA."
         primaryCta={{ label: "Crear mi coffee shop", href: "/crear-tienda" }}
         secondaryCta={{ label: "Ver coffee shops", href: "/tiendas" }}
         compact
@@ -50,20 +60,26 @@ export function CatalogoContent() {
             ))}
           </div>
 
-          <p className="text-sm text-trade-muted mb-8">
-            {filtered.length} {filtered.length === 1 ? "producto" : "productos"}
-            {activeFilter !== "all" && ` · ${filters.find((f) => f.value === activeFilter)?.label}`}
-          </p>
+          {!loading && (
+            <p className="text-sm text-trade-muted mb-8">
+              {filtered.length} {filtered.length === 1 ? "producto" : "productos"}
+              {activeFilter !== "all" && ` · ${filters.find((f) => f.value === activeFilter)?.label}`}
+            </p>
+          )}
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {filtered.map((product) => (
-              <div key={product.id} id={product.id}>
-                <CoffeeCard product={product} />
-              </div>
-            ))}
-          </div>
+          {loading ? (
+            <p className="text-center text-trade-muted py-16">Cargando catálogo...</p>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {filtered.map((product) => (
+                <div key={product.id} id={product.id}>
+                  <MarketplaceProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          )}
 
-          {filtered.length === 0 && (
+          {!loading && filtered.length === 0 && (
             <p className="text-center text-trade-muted py-16">No hay productos en esta categoría.</p>
           )}
         </div>

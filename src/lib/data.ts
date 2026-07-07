@@ -221,39 +221,18 @@ export const origins = [
 
 export const storePlans = [
   {
-    name: "Starter",
+    name: "Comisión por venta",
     price: 0,
-    description: "Ideal para empezar tu coffee shop online",
+    commission: 8,
+    description: "Sin suscripción — pagas solo cuando vendes",
     features: [
-      "Hasta 10 productos",
-      "Página de tienda personalizada",
-      "Catálogo de café verde de la plataforma",
-      "Soporte por email",
-    ],
-  },
-  {
-    name: "Pro",
-    price: 49,
-    description: "Para tostadores y distribuidores en crecimiento",
-    features: [
-      "Productos ilimitados",
-      "Acceso a logística internacional",
-      "Maquila de marca básica",
-      "Panel de analíticas",
-      "Soporte prioritario",
+      "0 USD de cuota mensual",
+      "8% fijo por cada venta concretada",
+      "Tienda profesional personalizada",
+      "Catálogo de café de especialidad",
+      "Reportes retail y datos de mercado",
+      "Logística internacional opcional",
     ],
     highlighted: true,
   },
-  {
-    name: "Enterprise",
-    price: 149,
-    description: "Operación completa con logística y maquila premium",
-    features: [
-      "Todo lo de Pro",
-      "Operador logístico dedicado",
-      "Maquila premium con Q-Grader",
-      "API de integración",
-      "Gerente de cuenta",
-    ],
-  },
-];
+] as const;

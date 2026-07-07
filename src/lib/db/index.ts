@@ -5,6 +5,7 @@ import { drizzle as drizzleLibsql } from "drizzle-orm/libsql";
 import fs from "fs";
 import path from "path";
 import * as schema from "./schema";
+import { migrateLibsql, migrateSqlite } from "./migrate";
 
 type DbInstance = ReturnType<typeof drizzleSqlite<typeof schema>>;
 
@@ -62,15 +63,57 @@ const INIT_SQL = `
   CREATE TABLE IF NOT EXISTS coffee_stores (
     id TEXT PRIMARY KEY,
     slug TEXT NOT NULL UNIQUE,
+    admin_token TEXT NOT NULL UNIQUE,
+    password_hash TEXT,
+    email_verified INTEGER NOT NULL DEFAULT 0,
+    email_verification_token TEXT,
     store_name TEXT NOT NULL,
     owner_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     country TEXT NOT NULL,
+    city TEXT DEFAULT '',
+    phone TEXT DEFAULT '',
     specialty TEXT NOT NULL,
-    plan TEXT NOT NULL DEFAULT 'Starter',
+    business_type TEXT NOT NULL DEFAULT 'tostador',
+    retail_channel TEXT DEFAULT '',
+    monthly_volume_kg INTEGER,
+    commission_rate REAL NOT NULL DEFAULT 0.08,
     description TEXT DEFAULT '',
-    status TEXT NOT NULL DEFAULT 'pending',
+    store_model TEXT NOT NULL DEFAULT 'coffee_shop',
+    store_template TEXT NOT NULL DEFAULT 'advanced',
+    logo_url TEXT DEFAULT '',
+    cover_image_url TEXT DEFAULT '',
+    physical_address TEXT DEFAULT '',
+    physical_city TEXT DEFAULT '',
+    physical_country TEXT DEFAULT '',
+    purchase_locations TEXT DEFAULT '[]',
+    social_links TEXT DEFAULT '{}',
+    theme_primary_color TEXT DEFAULT '#68190e',
+    theme_accent_color TEXT DEFAULT '#2d5a27',
+    theme_background_color TEXT DEFAULT '#f7e9e0',
+    theme_hero_title TEXT DEFAULT '',
+    theme_hero_subtitle TEXT DEFAULT '',
+    theme_button_style TEXT DEFAULT 'pill',
+    status TEXT NOT NULL DEFAULT 'active',
     created_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS store_products (
+    id TEXT PRIMARY KEY,
+    store_id TEXT NOT NULL,
+    name TEXT NOT NULL,
+    origin TEXT NOT NULL DEFAULT 'Colombia',
+    description TEXT DEFAULT '',
+    image_url TEXT DEFAULT '',
+    price_per_kg REAL NOT NULL,
+    score REAL,
+    process TEXT DEFAULT '',
+    variety TEXT DEFAULT '',
+    type TEXT NOT NULL DEFAULT 'verde',
+    profile TEXT DEFAULT '[]',
+    altitude TEXT DEFAULT '',
+    published INTEGER NOT NULL DEFAULT 1,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
   );
   CREATE TABLE IF NOT EXISTS logistics_quotes (
     id TEXT PRIMARY KEY,
@@ -83,6 +126,60 @@ const INIT_SQL = `
     status TEXT NOT NULL DEFAULT 'pending',
     created_at INTEGER NOT NULL
   );
+  CREATE TABLE IF NOT EXISTS retail_sales_reports (
+    id TEXT PRIMARY KEY,
+    store_id TEXT,
+    store_email TEXT NOT NULL,
+    store_name TEXT NOT NULL,
+    period_month TEXT NOT NULL,
+    channel TEXT NOT NULL,
+    product_name TEXT NOT NULL,
+    units_sold INTEGER,
+    kg_sold REAL NOT NULL,
+    avg_price_usd REAL,
+    city TEXT DEFAULT '',
+    region TEXT DEFAULT '',
+    notes TEXT DEFAULT '',
+    created_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS buyer_inquiries (
+    id TEXT PRIMARY KEY,
+    product_id TEXT NOT NULL,
+    product_name TEXT NOT NULL,
+    buyer_name TEXT NOT NULL,
+    company TEXT DEFAULT '',
+    email TEXT NOT NULL,
+    country TEXT NOT NULL,
+    channel TEXT NOT NULL,
+    volume_kg INTEGER,
+    message TEXT DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'pending',
+    created_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS store_blog_posts (
+    id TEXT PRIMARY KEY,
+    store_id TEXT NOT NULL,
+    slug TEXT NOT NULL,
+    title TEXT NOT NULL,
+    excerpt TEXT DEFAULT '',
+    content TEXT DEFAULT '',
+    cover_image_url TEXT DEFAULT '',
+    published INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS store_pages (
+    id TEXT PRIMARY KEY,
+    store_id TEXT NOT NULL,
+    slug TEXT NOT NULL,
+    nav_label TEXT NOT NULL,
+    title TEXT NOT NULL,
+    content TEXT DEFAULT '',
+    published INTEGER NOT NULL DEFAULT 0,
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+  );
 `;
 
 export async function initDatabase(): Promise<void> {
@@ -90,6 +187,7 @@ export async function initDatabase(): Promise<void> {
     getDb();
     if (libsqlClient) {
       await libsqlClient.executeMultiple(INIT_SQL);
+      await migrateLibsql(libsqlClient);
     }
     return;
   }
@@ -97,5 +195,6 @@ export async function initDatabase(): Promise<void> {
   getDb();
   if (sqliteRaw) {
     sqliteRaw.exec(INIT_SQL);
+    migrateSqlite(sqliteRaw);
   }
 }

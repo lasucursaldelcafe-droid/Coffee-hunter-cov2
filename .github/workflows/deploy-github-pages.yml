@@ -1,0 +1,45 @@
+name: Publicar sitio web
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Build sitio estático
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          npm ci
+          node scripts/build-github-pages.mjs
+
+      - name: Publicar en rama gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./out
+          force_orphan: true
+
+      - name: URL pública
+        run: |
+          echo "============================================"
+          echo "✅ Sitio publicado en gh-pages"
+          echo "URL: https://lasucursaldelcafe-droid.github.io/Coffee-hunter-cov2/"
+          echo "============================================"
