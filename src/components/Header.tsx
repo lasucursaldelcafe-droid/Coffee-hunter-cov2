@@ -2,66 +2,88 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { PromoBar } from "@/components/home/PromoBar";
 
-const navLinks = [
-  { href: "/catalogo", label: "Comprar" },
-  { href: "/tiendas", label: "Tiendas" },
-  { href: "/panel", label: "Vender" },
-  { href: "/logistica", label: "Logística" },
-  { href: "/nosotros", label: "Nosotros" },
+const shopLinks = [
+  { href: "/catalogo", label: "Catálogo", desc: "Microlotes y variedades de especialidad" },
+  { href: "/catalogo?tipo=verde", label: "Café verde", desc: "Para tostadores y exportadores" },
+  { href: "/catalogo?tipo=tostado", label: "Café tostado", desc: "Perfiles listos para retail" },
+];
+
+const platformLinks = [
+  { href: "/tiendas", label: "Coffee Shops", desc: "Directorio de tiendas activas" },
+  { href: "/crear-tienda", label: "Crear tienda", desc: "Comisión 8% · sin mensualidad" },
+  { href: "/panel", label: "Panel vendedor", desc: "Administra tu coffee shop" },
+];
+
+const aboutLinks = [
+  { href: "/logistica", label: "Logística", desc: "Envíos a 15+ países" },
+  { href: "/maquila", label: "Maquila", desc: "Tu marca de café premium" },
+  { href: "/nosotros", label: "Nosotros", desc: "Nuestra historia" },
 ];
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [megaOpen, setMegaOpen] = useState<string | null>(null);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-cream">
+    <header className="sticky top-0 z-50 bg-white border-b border-black/5">
+      <PromoBar />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-full bg-green flex items-center justify-center">
-              <span className="text-white font-bold text-lg">CG</span>
-            </div>
-            <div className="hidden sm:block">
-              <span className="font-display font-bold text-coffee text-lg leading-tight block">
-                Colombia Green Coffee
-              </span>
-              <span className="text-xs text-green tracking-wide">
-                Especialidad · Logística · Marketplace
-              </span>
-            </div>
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" className="font-display font-bold text-lg text-trade-ink tracking-tight">
+            Colombia Green Coffee
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-foreground/80 hover:text-coffee transition-colors"
+          <nav className="hidden lg:flex items-center gap-1">
+            {[
+              { id: "shop", label: "Comprar", links: shopLinks },
+              { id: "platform", label: "Vender", links: platformLinks },
+              { id: "about", label: "Servicios", links: aboutLinks },
+            ].map((group) => (
+              <div
+                key={group.id}
+                className="relative"
+                onMouseEnter={() => setMegaOpen(group.id)}
+                onMouseLeave={() => setMegaOpen(null)}
               >
-                {link.label}
-              </Link>
+                <button
+                  type="button"
+                  className="px-4 py-2 text-sm font-medium text-trade-ink/80 hover:text-trade-ink transition-colors"
+                >
+                  {group.label}
+                </button>
+                {megaOpen === group.id && (
+                  <div className="absolute top-full left-0 w-72 bg-white border border-black/5 shadow-xl rounded-xl p-4 mt-1">
+                    {group.links.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="block px-3 py-3 rounded-lg hover:bg-warm transition-colors"
+                      >
+                        <span className="block text-sm font-semibold text-coffee">{link.label}</span>
+                        <span className="block text-xs text-trade-muted mt-0.5">{link.desc}</span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </nav>
 
           <div className="hidden lg:flex items-center gap-3">
-            <Link
-              href="/catalogo"
-              className="text-sm font-medium text-coffee hover:text-coffee-dark transition-colors"
-            >
-              Explorar catálogo
+            <Link href="/panel" className="text-sm font-medium text-trade-ink/70 hover:text-trade-ink">
+              Iniciar sesión
             </Link>
-            <Link
-              href="/crear-tienda"
-              className="px-5 py-2.5 bg-coffee text-white text-sm font-semibold rounded-full hover:bg-coffee-dark transition-colors"
-            >
-              Crear tienda gratis
+            <Link href="/crear-tienda" className="btn-trade btn-trade-primary btn-trade-pill px-6 py-2.5 text-sm">
+              Empezar
             </Link>
           </div>
 
           <button
             type="button"
-            className="lg:hidden p-2 text-coffee"
+            className="lg:hidden p-2 text-trade-ink"
             onClick={() => setOpen(!open)}
             aria-label={open ? "Cerrar menú" : "Abrir menú"}
           >
@@ -76,24 +98,25 @@ export function Header() {
         </div>
 
         {open && (
-          <nav className="lg:hidden pb-4 border-t border-cream pt-4 space-y-2">
-            {navLinks.map((link) => (
+          <nav className="lg:hidden pb-6 border-t border-black/5 pt-4 space-y-1">
+            {[...shopLinks, ...platformLinks, ...aboutLinks].map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="block px-2 py-2 text-sm font-medium text-foreground/80 hover:text-coffee"
+                className="block px-2 py-3 text-sm font-medium text-trade-ink/80 hover:text-coffee"
                 onClick={() => setOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/crear-tienda"
-              className="block mt-3 px-5 py-2.5 bg-coffee text-white text-sm font-semibold rounded-full text-center"
-              onClick={() => setOpen(false)}
-            >
-              Crear mi tienda
-            </Link>
+            <div className="pt-4 flex flex-col gap-2">
+              <Link href="/panel" className="btn-trade btn-trade-secondary btn-trade-pill text-center" onClick={() => setOpen(false)}>
+                Iniciar sesión
+              </Link>
+              <Link href="/crear-tienda" className="btn-trade btn-trade-primary btn-trade-pill text-center" onClick={() => setOpen(false)}>
+                Empezar
+              </Link>
+            </div>
           </nav>
         )}
       </div>

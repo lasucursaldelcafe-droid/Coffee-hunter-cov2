@@ -2,6 +2,7 @@
 
 :root {
   --cream: #f7e9e0;
+  --warm: #f7f5f0;
   --coffee: #68190e;
   --coffee-dark: #4a1109;
   --slate: #242833;
@@ -10,6 +11,8 @@
   --gold: #c4a35a;
   --background: #ffffff;
   --foreground: #121212;
+  --trade-ink: #1a1a1a;
+  --trade-muted: #5c5c5c;
 }
 
 @theme inline {
@@ -22,6 +25,9 @@
   --color-gold: var(--gold);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-warm: var(--warm);
+  --color-trade-ink: var(--trade-ink);
+  --color-trade-muted: var(--trade-muted);
   --font-sans: var(--font-poppins);
   --font-display: var(--font-funnel);
 }
@@ -77,4 +83,77 @@ button:focus-visible {
 .animate-fade-up-delay-2 {
   animation: fade-up 0.7s ease-out 0.3s forwards;
   opacity: 0;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+.btn-trade {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+}
+
+.btn-trade-primary {
+  background-color: var(--trade-ink);
+  color: #fff;
+}
+
+.btn-trade-primary:hover {
+  background-color: var(--coffee);
+}
+
+.btn-trade-secondary {
+  background-color: #fff;
+  color: var(--trade-ink);
+  border: 1px solid rgb(0 0 0 / 0.15);
+}
+
+.btn-trade-secondary:hover {
+  border-color: rgb(0 0 0 / 0.4);
+}
+
+.btn-trade-pill {
+  border-radius: 9999px;
+}
+
+.btn-trade-square {
+  border-radius: 0.5rem;
+}
+
+.section-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--green);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.trade-card {
+  background-color: #fff;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgb(0 0 0 / 0.05);
+  transition: box-shadow 0.3s;
+}
+
+.trade-card:hover {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
 }

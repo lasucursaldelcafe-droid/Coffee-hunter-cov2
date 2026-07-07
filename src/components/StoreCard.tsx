@@ -16,7 +16,7 @@ export function StoreCard({ store }: StoreCardProps) {
   const gradient = storeGradients[store.image] ?? "from-cream to-cream/50";
 
   return (
-    <article className="group bg-white rounded-2xl border border-cream overflow-hidden hover:shadow-xl transition-all duration-300">
+    <article className="group trade-card hover:shadow-xl transition-all duration-300">
       <div className={`h-32 bg-gradient-to-br ${gradient} relative`}>
         <div className="absolute bottom-4 left-4">
           <div className="w-14 h-14 rounded-full bg-white shadow-md flex items-center justify-center">
