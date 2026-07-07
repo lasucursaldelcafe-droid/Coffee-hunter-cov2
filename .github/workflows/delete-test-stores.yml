@@ -1,0 +1,29 @@
+name: Eliminar tiendas por slug
+
+on:
+  workflow_dispatch:
+    inputs:
+      slugs:
+        description: "Slugs separados por coma"
+        required: true
+        type: string
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    env:
+      TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+      TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+      SLUGS: ${{ inputs.slugs }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Eliminar tiendas
+        run: node scripts/delete-stores-by-slug.mjs
