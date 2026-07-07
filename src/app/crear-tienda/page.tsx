@@ -1,57 +1,92 @@
 import type { Metadata } from "next";
-import { SectionHeading } from "@/components/SectionHeading";
+import Link from "next/link";
+import { PageHero } from "@/components/home/PageHero";
 import { StoreRegistrationForm } from "@/components/StoreRegistrationForm";
-import { storePlans } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Crear tu coffee shop",
   description:
-    "Inscríbete en Colombia Green Coffee y monta tu propia tienda de café. Accede a catálogo, logística internacional y maquila de marca.",
+    "Inscríbete en Colombia Green Coffee y monta tu propia tienda de café. Comisión fija por venta, sin cuota mensual.",
 };
+
+const benefits = [
+  {
+    title: "Tienda en minutos",
+    description: "Página personalizada, plantillas visuales y panel de administración.",
+  },
+  {
+    title: "Comisión transparente",
+    description: "Solo 8% por venta concretada. Cero mensualidad.",
+  },
+  {
+    title: "Catálogo + logística",
+    description: "Acceso al marketplace central y operadores en 15+ países.",
+  },
+];
+
+const steps = [
+  "Completa el formulario con datos de tu negocio",
+  "Personaliza apariencia y publica productos",
+  "Comparte tu tienda y vende en el catálogo central",
+];
 
 export default function CrearTiendaPage() {
   return (
-    <div className="py-12 lg:py-20">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow="Coffee Shop Marketplace"
-          title="Crea tu coffee shop en minutos"
-          description="Únete a nuestra plataforma y vende café colombiano de especialidad. Elige tu plan, configura tu tienda y empieza a vender con logística internacional incluida."
-        />
+    <>
+      <PageHero
+        eyebrow="Coffee Shop Marketplace"
+        title="Crea tu coffee shop en minutos"
+        description="Únete a la plataforma y vende café colombiano de especialidad. Sin suscripción — pagas solo cuando vendes."
+        primaryCta={{ label: "Empezar abajo", href: "#registro" }}
+        secondaryCta={{ label: "Ya tengo tienda", href: "/panel" }}
+      />
 
-        <div className="grid sm:grid-cols-3 gap-4 mb-12">
-          {storePlans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`p-5 rounded-xl border ${
-                plan.highlighted ? "border-green bg-green/5" : "border-cream"
-              }`}
-            >
-              <h3 className="font-display font-bold text-coffee">{plan.name}</h3>
-              <p className="text-2xl font-bold text-coffee mt-1 mb-3">
-                {plan.price === 0 ? "Gratis" : `$${plan.price}/mes`}
-              </p>
-              <ul className="space-y-2">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2 text-sm text-foreground/70">
-                    <svg className="w-4 h-4 text-green shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+      <section className="py-16 lg:py-20 bg-white border-b border-black/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-3 gap-10 lg:gap-14 mb-16">
+            {benefits.map((item) => (
+              <div key={item.title}>
+                <h3 className="font-display text-lg font-bold text-coffee mb-3">{item.title}</h3>
+                <p className="text-trade-muted text-sm leading-relaxed">{item.description}</p>
+              </div>
+            ))}
+          </div>
 
-        <div className="bg-white rounded-2xl border border-cream p-6 sm:p-8">
-          <h2 className="font-display text-xl font-bold text-coffee mb-6">
-            Formulario de inscripción
-          </h2>
-          <StoreRegistrationForm />
+          <div className="trade-card p-8 lg:p-10 bg-warm border-0">
+            <p className="section-eyebrow">Cómo funciona</p>
+            <ol className="grid sm:grid-cols-3 gap-6">
+              {steps.map((step, i) => (
+                <li key={step} className="flex gap-4">
+                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-trade-ink text-white text-sm font-bold flex items-center justify-center">
+                    {i + 1}
+                  </span>
+                  <span className="text-sm text-trade-muted leading-relaxed pt-1">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <section id="registro" className="py-16 lg:py-20 bg-warm scroll-mt-24">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-trade-ink mb-3">
+              Formulario de inscripción
+            </h2>
+            <p className="text-trade-muted text-sm">
+              ¿Ya tienes cuenta?{" "}
+              <Link href="/panel" className="text-green font-semibold hover:underline">
+                Entrar al panel
+              </Link>
+            </p>
+          </div>
+
+          <div className="trade-card p-6 sm:p-10">
+            <StoreRegistrationForm />
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
