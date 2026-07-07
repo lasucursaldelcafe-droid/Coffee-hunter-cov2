@@ -17,6 +17,7 @@ const platformLinks = [
 ];
 
 const aboutLinks = [
+  { href: "/como-funciona", label: "Cómo funciona", desc: "Modelo de negocio de la plataforma" },
   { href: "/logistica", label: "Logística", desc: "Envíos a 15+ países" },
   { href: "/maquila", label: "Maquila", desc: "Tu marca de café premium" },
   { href: "/nosotros", label: "Nosotros", desc: "Nuestra historia" },

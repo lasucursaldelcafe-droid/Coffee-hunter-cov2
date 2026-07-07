@@ -14,6 +14,7 @@ const footerLinks = {
     { href: "/logistica", label: "Logística" },
   ],
   empresa: [
+    { href: "/como-funciona", label: "Cómo funciona" },
     { href: "/nosotros", label: "Nosotros" },
     { href: "/crear-tienda", label: "Comisión 8%" },
   ],
