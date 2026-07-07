@@ -19,7 +19,7 @@ interface CoffeeCardProps {
 
 export function CoffeeCard({ product }: CoffeeCardProps) {
   return (
-    <article className="group bg-white rounded-2xl border border-cream overflow-hidden hover:shadow-xl transition-all duration-300">
+    <article className="group trade-card hover:shadow-xl transition-all duration-300">
       <div className="h-48 bg-gradient-to-br from-cream to-cream/50 relative overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-24 h-24 rounded-full bg-coffee/10 flex items-center justify-center">
