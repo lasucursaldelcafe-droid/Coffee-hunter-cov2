@@ -220,9 +220,10 @@ Comprador paga $1,000
 | Blog y páginas por tienda | ✅ |
 | Visual estilo Trade | ✅ PR #9 |
 | Página `/como-funciona` | ✅ Este sprint |
-| Email bienvenida con URLs | ❌ Pendiente |
+| Email bienvenida con URLs | ✅ (Resend) |
 | Pasarela de pago automática | ❌ Cotización manual |
-| Quiz de matching comprador | ❌ Futuro (equivalente Trade quiz) |
+| Quiz de matching comprador | ✅ `/encuentra-tu-cafe` |
+| Colecciones curadas | ✅ `/catalogo/coleccion` |
 
 ---
 
@@ -230,9 +231,9 @@ Comprador paga $1,000
 
 Inspiradas en Trade, priorizadas para CGC:
 
-1. **“Quiz” B2B** — 5 preguntas (volumen, tipo, origen, canal, presupuesto) → recomienda productos/tiendas.
-2. **Colecciones curadas** — páginas `/catalogo/coleccion/huila-gesha` con editorial.
-3. **Email onboarding** — al crear tienda, enviar URLs de panel + tienda pública.
+1. **“Quiz” B2B** — ✅ Implementado en `/encuentra-tu-cafe`.
+2. **Colecciones curadas** — ✅ Implementado en `/catalogo/coleccion/{slug}`.
+3. **Email onboarding** — ✅ Al crear tienda (requiere `RESEND_API_KEY`).
 4. **Garantía de calidad** — política explícita tipo “si el lote no cumple SCA prometido, mediación”.
 5. **Corporate / gifts B2B** — packs de muestras para distribuidores (equivalente corporate gifting).
 
@@ -244,6 +245,8 @@ Inspiradas en Trade, priorizadas para CGC:
 |-----|-----|
 | Público general | `/` |
 | Cómo funciona | `/como-funciona` |
+| Quiz B2B | `/encuentra-tu-cafe` |
+| Colecciones | `/catalogo/coleccion` |
 | Catálogo | `/catalogo` |
 | Tiendas | `/tiendas` |
 | Crear tienda | `/crear-tienda` |

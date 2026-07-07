@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
+import { buildStoreUrls, sendStoreWelcomeEmail } from "@/lib/email/send";
 import { storeRegistrationSchema } from "@/lib/validations/store";
 import { countCoffeeStores, listPublicStores, registerCoffeeStore } from "@/lib/stores/register";
 
@@ -9,12 +10,23 @@ export async function POST(request: Request) {
     const input = storeRegistrationSchema.parse(body);
     const result = await registerCoffeeStore(input);
 
+    const urls = buildStoreUrls(result.slug);
+
+    void sendStoreWelcomeEmail({
+      to: input.email,
+      ownerName: input.ownerName,
+      storeName: input.storeName,
+      panelUrl: urls.panelUrl,
+      storeUrl: urls.storeUrl,
+    });
+
     return NextResponse.json({
       success: true,
       message: "Tienda creada exitosamente",
       slug: result.slug,
       adminToken: result.adminToken,
       panelUrl: `/panel/${result.slug}`,
+      storeUrl: `/tiendas/${result.slug}`,
       commissionRate: result.commissionRate,
     });
   } catch (error) {

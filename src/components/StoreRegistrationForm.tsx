@@ -16,6 +16,7 @@ export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormPr
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [panelUrl, setPanelUrl] = useState("/panel");
+  const [storeUrl, setStoreUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({
@@ -80,6 +81,7 @@ export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormPr
       if (result) {
         saveStoreAdminSession(result.slug, result.adminToken);
         setPanelUrl(result.panelUrl);
+        setStoreUrl(result.storeUrl);
       }
       setSubmitted(true);
     } catch (err) {
@@ -100,16 +102,36 @@ export function StoreRegistrationForm({ mode = "full" }: StoreRegistrationFormPr
         <h3 className="font-display text-2xl font-bold text-coffee mb-3">
           ¡Tu tienda está lista!
         </h3>
-        <p className="text-foreground/70 max-w-md mx-auto mb-6">
+        <p className="text-foreground/70 max-w-md mx-auto mb-4">
           <strong>{form.storeName}</strong> ya está activa. Administra productos, colores y textos
           desde tu panel. Tus productos aparecerán también en el catálogo principal.
         </p>
-        <a
-          href={panelUrl}
-          className="inline-block px-6 py-3 bg-coffee text-white font-semibold rounded-full hover:bg-coffee-dark transition-colors"
-        >
-          Ir a mi panel de administración
-        </a>
+        {storeUrl && (
+          <p className="text-sm text-foreground/60 max-w-md mx-auto mb-6">
+            Tu tienda pública:{" "}
+            <a href={storeUrl} className="text-green font-medium hover:underline">
+              {typeof window !== "undefined" ? `${window.location.origin}${storeUrl}` : storeUrl}
+            </a>
+            <br />
+            <span className="text-xs">Te enviamos un correo con estos enlaces si configuraste email.</span>
+          </p>
+        )}
+        <div className="flex flex-wrap justify-center gap-3">
+          <a
+            href={panelUrl}
+            className="inline-block px-6 py-3 bg-coffee text-white font-semibold rounded-full hover:bg-coffee-dark transition-colors"
+          >
+            Ir a mi panel
+          </a>
+          {storeUrl && (
+            <a
+              href={storeUrl}
+              className="inline-block px-6 py-3 border border-coffee text-coffee font-semibold rounded-full hover:bg-cream transition-colors"
+            >
+              Ver mi tienda pública
+            </a>
+          )}
+        </div>
       </div>
     );
   }
