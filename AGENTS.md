@@ -58,3 +58,12 @@ La **app de logística empresarial** vive en el repo **Programa-de-logistca** �
 ## Diseño
 
 Paleta: crema `#f7e9e0`, café `#68190e`, verde `#2d5a27` (inspirado en colombiancoffeehunter.com).
+
+## Cursor Cloud specific instructions
+
+- **Solo dependencias**: el update script (`npm install`) ya deja el entorno listo. Node 22 y `better-sqlite3` compilan sin pasos extra.
+- **Base de datos local**: por defecto usa SQLite en `./data/colombia-green-coffee.db` (gitignored). No requiere Turso ni Docker para desarrollo. El esquema se **autoinicializa** en cada request vía `initDatabase()` (`src/lib/db/index.ts`), así que `npm run db:init` es opcional. Turso solo se activa si defines `TURSO_DATABASE_URL` + `TURSO_AUTH_TOKEN`.
+- **`.env.local` no es obligatorio**: no hay variables requeridas en tiempo de ejecución. `ENCRYPTION_KEY` solo aparece en scripts/docs de deploy, no en `src/`. `npm run setup` (copia `.env.example` y genera `ENCRYPTION_KEY`) es opcional.
+- **Correr la app**: `npm run dev` (Next.js 16 + Turbopack) en http://localhost:3000. Comandos estándar de verificación en `package.json`: `npm run lint`, `npm run typecheck`. `npm run lint` reporta warnings de `<img>` esperados (0 errores).
+- **No requieren credenciales** los scripts `setup:*` / `deploy:*` / `verify:ecosystem` para desarrollo local; son para deploy a Turso/Vercel/GitHub.
+- **Smoke test rápido**: `curl localhost:3000/api/health` y crear tienda con `POST /api/tiendas` (ver `src/lib/validations/store.ts` para el payload). Las tiendas se listan en `/tiendas`.
